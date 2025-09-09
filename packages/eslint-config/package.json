@@ -1,0 +1,14 @@
+{
+  "name": "@serp/eslint-config",
+  "version": "1.0.0",
+  "description": "Shared eslint config for Nuxt projects",
+  "type": "module",
+  "exports": {
+    ".": "./eslint.config.mjs"
+  },
+  "devDependencies": {
+    "@nuxt/eslint-config": "^1.9.0",
+    "eslint": "^9.35.0",
+    "typescript": "^5.9.2"
+  }
+}
