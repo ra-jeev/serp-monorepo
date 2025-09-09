@@ -1,0 +1,18 @@
+{
+  "name": "@serp/ui",
+  "type": "module",
+  "version": "0.0.1",
+  "main": "./nuxt.config.ts",
+  "scripts": {
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "devDependencies": {
+    "@nuxt/ui": "3.3.3",
+    "@serp/eslint-config": "workspace:*",
+    "@types/node": "^24.3.1",
+    "nuxt": "^4.1.1",
+    "vue": "latest"
+  }
+}
