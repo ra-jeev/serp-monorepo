@@ -1,0 +1,6 @@
+{
+  "name": "serp-monorepo",
+  "version": "1.0.0",
+  "description": "The monorepo for various Serp apps and sites",
+  "packageManager": "pnpm@10.15.1"
+}
