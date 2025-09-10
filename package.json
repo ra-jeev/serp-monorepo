@@ -2,5 +2,18 @@
   "name": "serp-monorepo",
   "version": "1.0.0",
   "description": "The monorepo for various Serp apps and sites",
-  "packageManager": "pnpm@10.15.1"
+  "packageManager": "pnpm@10.15.1",
+  "scripts": {
+    "prepare": "husky",
+    "dev": "pnpm --filter @serp/serp-co dev",
+    "lint": "pnpm -r lint",
+    "lint:fix": "pnpm -r lint:fix"
+  },
+  "lint-staged": {
+    "**/*.{js,cjs,mjs,ts,vue}": "eslint --fix"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.6"
+  }
 }
