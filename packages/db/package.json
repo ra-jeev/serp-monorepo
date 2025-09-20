@@ -1,0 +1,22 @@
+{
+  "name": "@serp/db",
+  "version": "1.0.0",
+  "description": "The DB package for the monorepo",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "lint": "eslint . --ext .ts",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:migrate": "drizzle-kit migrate"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.44.5",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@serp/eslint-config": "workspace:*",
+    "@types/pg": "^8.15.5",
+    "drizzle-kit": "^0.31.4"
+  }
+}
