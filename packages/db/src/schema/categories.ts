@@ -1,6 +1,5 @@
 import {
   pgTable,
-  integer,
   jsonb,
   serial,
   text,
@@ -15,7 +14,6 @@ export const categories = pgTable('categories', {
   entityType: varchar('entity_type', { length: 50 }).notNull(),
   slug: varchar('slug', { length: 255 }).notNull(),
   name: varchar('name', { length: 255 }).notNull(),
-  sourceId: integer('source_id'),
   faqs: jsonb('faqs'),
   buyingGuide: text('buying_guide'),
   createdAt: timestamp('created_at', { withTimezone: true })
