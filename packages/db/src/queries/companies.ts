@@ -1,36 +1,57 @@
-import { eq, ilike, desc, asc, count, and } from 'drizzle-orm';
+import { eq, ilike, desc, asc, count, and, inArray } from 'drizzle-orm';
+import { z } from 'zod';
 import { getDb } from '../client';
 import { companies } from '../schema/companies';
 import { categories } from '../schema/categories';
 import { companyCategories } from '../schema/junction-tables';
+import { selectCategorySchema, selectCompanySchema } from '../validations';
 
-export type CompanySortOption = 'name-asc' | 'name-desc' | 'recent' | 'updated';
+export const companyCategoryResultSchema = selectCategorySchema.pick({
+  id: true,
+  name: true,
+  slug: true,
+  entityType: true,
+});
+export type CompanyCategoryResult = z.infer<typeof companyCategoryResultSchema>;
 
-export interface CompanyFilters {
-  categorySlug?: string;
-  nameQuery?: string;
-  sortBy?: CompanySortOption;
-  limit?: number;
-  offset?: number;
-}
+export const companySortOptions = z.enum([
+  'name-asc',
+  'name-desc',
+  'recent',
+  'updated',
+]);
 
-export interface CompanyQueryResult {
-  companies: Array<{
-    id: number;
-    slug: string;
-    name: string;
-    logo: string | null;
-    excerpt: string | null;
-    domain: string | null;
-    oneLiner: string | null;
-    createdAt: Date;
-    updatedAt: Date;
-  }>;
+export type CompanySortOption = z.infer<typeof companySortOptions>;
+
+export const companyFiltersSchema = z.object({
+  categorySlug: z.string().optional(),
+  nameQuery: z.string().optional(),
+  sortBy: companySortOptions.default('name-asc'),
+  limit: z.number().int().positive().default(50),
+  offset: z.number().int().nonnegative().default(0),
+});
+export type CompanyFilters = z.input<typeof companyFiltersSchema>;
+
+export const companyResultSchema = selectCompanySchema.pick({
+  id: true,
+  slug: true,
+  name: true,
+  logo: true,
+  excerpt: true,
+  domain: true,
+  oneLiner: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type CompanyResult = z.infer<typeof companyResultSchema>;
+
+export type CompanyQueryResult = {
+  companies: CompanyResult[];
   total: number;
   hasMore: boolean;
-}
+};
 
-// Base company selection fields (without heavy content)
 const companySelectFields = {
   id: companies.id,
   slug: companies.slug,
@@ -48,25 +69,26 @@ export async function findCompanies(
 ): Promise<CompanyQueryResult> {
   const db = getDb();
 
-  const {
-    categorySlug,
-    nameQuery,
-    sortBy = 'name-asc',
-    limit = 50,
-    offset = 0,
-  } = filters;
+  const { categorySlug, nameQuery, sortBy, limit, offset }
+    = companyFiltersSchema.parse(filters);
 
   let query = db.select(companySelectFields).from(companies).$dynamic();
   let countQuery = db.select({ count: count() }).from(companies).$dynamic();
 
   if (categorySlug) {
     query = query
-      .innerJoin(companyCategories, eq(companies.id, companyCategories.companyId))
+      .innerJoin(
+        companyCategories,
+        eq(companies.id, companyCategories.companyId),
+      )
       .innerJoin(categories, eq(companyCategories.categoryId, categories.id))
       .where(eq(categories.slug, categorySlug));
 
     countQuery = countQuery
-      .innerJoin(companyCategories, eq(companies.id, companyCategories.companyId))
+      .innerJoin(
+        companyCategories,
+        eq(companies.id, companyCategories.companyId),
+      )
       .innerJoin(categories, eq(companyCategories.categoryId, categories.id))
       .where(eq(categories.slug, categorySlug));
   }
@@ -75,8 +97,12 @@ export async function findCompanies(
     const nameCondition = ilike(companies.name, `%${nameQuery}%`);
 
     if (categorySlug) {
-      query = query.where(and(eq(categories.slug, categorySlug), nameCondition));
-      countQuery = countQuery.where(and(eq(categories.slug, categorySlug), nameCondition));
+      query = query.where(
+        and(eq(categories.slug, categorySlug), nameCondition),
+      );
+      countQuery = countQuery.where(
+        and(eq(categories.slug, categorySlug), nameCondition),
+      );
     } else {
       query = query.where(nameCondition);
       countQuery = countQuery.where(nameCondition);
@@ -125,10 +151,16 @@ export async function findCompanyBySlug(slug: string) {
     .where(eq(companies.slug, slug))
     .limit(1);
 
-  return result[0] || null;
+  if (!result[0]) {
+    return null;
+  }
+
+  return selectCompanySchema.parse(result[0]);
 }
 
-export async function findCompanyCategories(companyId: number) {
+export async function findCompanyCategories(
+  companyId: number,
+): Promise<CompanyCategoryResult[]> {
   const db = getDb();
 
   return db
@@ -139,7 +171,26 @@ export async function findCompanyCategories(companyId: number) {
       entityType: categories.entityType,
     })
     .from(categories)
-    .innerJoin(companyCategories, eq(categories.id, companyCategories.categoryId))
+    .innerJoin(
+      companyCategories,
+      eq(categories.id, companyCategories.categoryId),
+    )
     .where(eq(companyCategories.companyId, companyId))
     .orderBy(asc(categories.name));
+}
+
+export async function findCompaniesByIds(
+  ids: number[],
+): Promise<CompanyResult[]> {
+  if (ids.length === 0) {
+    return [];
+  }
+
+  const db = getDb();
+  const result = await db
+    .select(companySelectFields)
+    .from(companies)
+    .where(inArray(companies.id, ids));
+
+  return result;
 }
