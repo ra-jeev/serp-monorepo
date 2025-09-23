@@ -1,5 +1,11 @@
-import { pgTable, serial, timestamp, varchar, text, jsonb } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
+import {
+  pgTable,
+  serial,
+  timestamp,
+  varchar,
+  text,
+  jsonb,
+} from 'drizzle-orm/pg-core';
 
 export const companies = pgTable('companies', {
   id: serial('id').primaryKey(),
@@ -21,5 +27,5 @@ export const companies = pgTable('companies', {
   updatedAt: timestamp('updated_at', { withTimezone: true })
     .notNull()
     .defaultNow()
-    .$onUpdate(() => sql`NOW()`),
+    .$onUpdate(() => new Date()),
 });

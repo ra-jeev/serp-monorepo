@@ -7,7 +7,6 @@ import {
   unique,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
 
 export const categories = pgTable('categories', {
   id: serial('id').primaryKey(),
@@ -22,5 +21,5 @@ export const categories = pgTable('categories', {
   updatedAt: timestamp('updated_at', { withTimezone: true })
     .notNull()
     .defaultNow()
-    .$onUpdate(() => sql`NOW()`),
+    .$onUpdate(() => new Date()),
 }, (t) => [unique().on(t.entityType, t.slug)]);
