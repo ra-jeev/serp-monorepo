@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "The DB package for the monorepo",
   "type": "module",
-  "main": "src/index.ts",
+  "exports": {
+    "./validations": "./src/validations/index.ts",
+    "./queries/*": "./src/queries/*.ts",
+    "./schema/*": "./src/schema/*.ts"
+  },
   "scripts": {
     "lint": "eslint . --ext .ts",
     "db:generate": "drizzle-kit generate",
