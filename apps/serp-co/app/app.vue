@@ -1,11 +1,29 @@
+<script setup lang="ts"></script>
+
 <template>
   <UApp>
-    <div>
-      <NuxtRouteAnnouncer />
-      <h1 class="text-3xl font-bold p-4">
-        Serp Co
-      </h1>
-      <HelloWorld />
-    </div>
+    <NuxtRouteAnnouncer />
+    <NuxtLoadingIndicator />
+
+    <UHeader>
+      <template #title>
+        <Logo class="h-12 w-auto" />
+      </template>
+
+      <template #right>
+        <UColorModeButton />
+      </template>
+    </UHeader>
+
+    <UMain>
+      <NuxtPage />
+    </UMain>
+
+    <UFooter>
+      <template #left>
+        Copyright © {{ new Date().getFullYear() }} SERP Co. All rights
+        reserved.
+      </template>
+    </UFooter>
   </UApp>
 </template>
