@@ -17,6 +17,9 @@ importers:
 
   apps/serp-co:
     dependencies:
+      '@serp/api':
+        specifier: workspace:*
+        version: link:../../packages/api
       '@serp/ui':
         specifier: workspace:*
         version: link:../../packages/ui
