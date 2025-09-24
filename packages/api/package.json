@@ -2,6 +2,9 @@
   "name": "@serp/api",
   "version": "1.0.0",
   "type": "module",
+  "exports": {
+    "./companies": "./src/services/companies.ts"
+  },
   "scripts": {
     "lint": "eslint ."
   },
