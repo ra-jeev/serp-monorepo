@@ -1,0 +1,3 @@
+/* import the main css file from the ui package to reference tailwind */
+@import '@serp/ui/app/assets/css/main.css';
+@plugin '@tailwindcss/typography';
