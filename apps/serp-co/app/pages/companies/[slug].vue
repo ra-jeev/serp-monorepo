@@ -4,6 +4,22 @@ const slug = route.params.slug as string;
 
 const { data: company, pending } = useCompanyDetails(slug);
 
+const companyLinks = computed(() => {
+  if (!company.value || !company.value.serplyLink) {
+    return [];
+  }
+
+  return [
+    {
+      label: company.value.domain || 'Visit Website',
+      icon: 'i-lucide-external-link',
+      trailing: true,
+      to: company.value.serplyLink,
+      target: '_blank',
+    },
+  ];
+});
+
 useSeoMeta({
   title: () => company.value?.name || 'Company',
   description: () => company.value?.oneLiner,
@@ -11,83 +27,88 @@ useSeoMeta({
 </script>
 
 <template>
-  <UContainer>
-    <UPage v-if="company && !pending">
-      <UPageHeader
-        :title="company.name"
-        :description="company.oneLiner || company.excerpt || undefined"
-      >
+  <UContainer v-if="!pending && company">
+    <UPage>
+      <UPageHeader :links="companyLinks">
         <template #headline>
-          <div class="flex items-center gap-2">
-            <UAvatar :src="company.logo || ''" :alt="company.name" size="lg" />
-            <div v-if="company.serplyLink" class="flex flex-col">
-              <span class="text-sm text-gray-500 dark:text-gray-400">
-                Website
-              </span>
-              <ULink
-                :to="company.serplyLink"
-                target="_blank"
-                class="text-primary font-semibold"
-              >
-                {{ company.domain }}
-              </ULink>
-            </div>
-          </div>
+          <UButton
+            variant="link"
+            icon="i-lucide-arrow-left"
+            @click="$router.go(-1)"
+          >
+            Back to Companies
+          </UButton>
         </template>
         <template #title>
-          <h1
-            class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl"
-          >
-            {{ company.name }}
-          </h1>
-        </template>
-        <template #description>
-          <p class="mt-4 text-lg text-gray-500 dark:text-gray-400 mss">
-            {{ company.excerpt }}
-          </p>
-        </template>
-        <template #extra>
-          <div class="flex items-center gap-2 mt-4">
-            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">
-              Categories:
-            </span>
-            <div class="flex flex-wrap gap-2">
-              <UBadge
-                v-for="category in company.categories"
-                :key="category.id"
-                :label="category.name"
-                variant="soft"
-              />
+          <div class="flex items-center gap-6">
+            <UAvatar
+              :src="company.logo || ''"
+              :alt="company.name"
+              class="size-20"
+            />
+            <div>
+              <h1>
+                {{ company.name }}
+              </h1>
+              <p class="mt-2 text-lg text-muted">
+                {{ company.oneLiner }}
+              </p>
             </div>
           </div>
         </template>
       </UPageHeader>
 
       <UPageBody>
-        <div
-          class="prose prose-primary dark:prose-invert max-w-none"
-          v-html="company.content"
-        />
-      </UPageBody>
+        <CompanyDetailsCard
+          v-if="company.excerpt"
+          id="overview"
+          title="Overview"
+        >
+          <p class="text-toned">{{ company.excerpt }}</p>
+        </CompanyDetailsCard>
 
-      <template v-if="company.hydratedAlternatives?.length">
-        <UPageGrid>
-          <UPageCard
-            v-for="altCompany in company.hydratedAlternatives"
-            :key="altCompany.id"
-            :title="altCompany.name"
-            :description="altCompany.oneLiner || undefined"
-            :to="`/companies/${altCompany.slug}`"
-          >
-            <template #icon>
-              <UAvatar :src="altCompany.logo || ''" :alt="altCompany.name" />
-            </template>
-          </UPageCard>
-        </UPageGrid>
-      </template>
+        <CompanyDetailsCard
+          v-if="company.categories?.length"
+          id="categories"
+          title="Related Categories"
+        >
+          <div class="flex flex-wrap gap-2">
+            <UBadge
+              v-for="category in company.categories"
+              :key="category.id"
+              :label="category.name"
+              size="lg"
+              variant="subtle"
+            />
+          </div>
+        </CompanyDetailsCard>
+
+        <CompanyDetailsCard
+          v-if="company.excerpt"
+          id="details"
+          title="More Details"
+        >
+          <div
+            ref="contentRef"
+            class="prose prose-primary dark:prose-invert max-w-none"
+            v-html="company.content"
+          />
+        </CompanyDetailsCard>
+
+        <CompanyDetailsCard
+          v-if="company.hydratedAlternatives?.length"
+          id="alternatives"
+          :title="`Alternatives to ${company.name}`"
+        >
+          <UPageGrid>
+            <CompanyCard
+              v-for="altCompany in company.hydratedAlternatives"
+              :key="altCompany.id"
+              :company="altCompany"
+            />
+          </UPageGrid>
+        </CompanyDetailsCard>
+      </UPageBody>
     </UPage>
-    <div v-else class="flex items-center justify-center h-96">
-      <UIcon name="i-heroicons-arrow-path" class="animate-spin text-4xl" />
-    </div>
   </UContainer>
 </template>
