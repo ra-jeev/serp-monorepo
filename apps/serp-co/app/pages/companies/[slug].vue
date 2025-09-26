@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { CompanyDetailResponse } from '@serp/api/companies';
+
 const route = useRoute();
 const slug = route.params.slug as string;
 
@@ -18,6 +20,92 @@ const companyLinks = computed(() => {
       target: '_blank',
     },
   ];
+});
+
+interface TocLink {
+  targetId: string;
+  targetLabel?: string;
+  label: string;
+}
+
+const findLinksInContent = (contentElement: HTMLElement) => {
+  const links: TocLink[] = [];
+  const headings = contentElement.querySelectorAll('h2');
+  headings.forEach((heading) => {
+    const label = heading.textContent?.trim();
+    if (label) {
+      const id = label
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^\w-]+/g, '');
+
+      heading.id = id;
+
+      links.push({
+        targetId: id,
+        label,
+      });
+    }
+  });
+
+  return links;
+};
+
+const navLinksMap: Partial<Record<keyof CompanyDetailResponse, TocLink>> = {
+  excerpt: { targetId: 'overview', label: 'Overview' },
+  categories: { targetId: 'categories', label: 'Categories' },
+  content: { targetId: 'details', label: 'Details' },
+  hydratedAlternatives: { targetId: 'alternatives', label: `Alternatives` },
+};
+
+const contentRef = useTemplateRef('contentRef');
+const addContentLinks = false;
+const tocLinks = computed(() => {
+  if (!company.value) {
+    return [];
+  }
+
+  const data = company.value;
+  const links: TocLink[] = [];
+  for (const key of Object.keys(navLinksMap)) {
+    const _key = key as keyof CompanyDetailResponse;
+    const value = data[_key];
+    if ((Array.isArray(value) && value.length) || Boolean(value)) {
+      const link = navLinksMap[_key];
+      if (link) {
+        if (_key === 'hydratedAlternatives') {
+          link.targetLabel = `${company.value?.name} Alternatives`;
+        }
+
+        links.push(link);
+        if (_key === 'content' && addContentLinks && contentRef.value) {
+          links.push(...findLinksInContent(contentRef.value));
+        }
+      }
+    }
+  }
+
+  return links;
+});
+
+const router = useRouter();
+function scrollToContent(id: string) {
+  const element = document.getElementById(id);
+  if (element) {
+    router.push({ hash: `#${id}` });
+    element.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+const getTitle = (key: keyof CompanyDetailResponse) => {
+  return navLinksMap[key]?.targetLabel ?? navLinksMap[key]?.label;
+};
+
+onMounted(async () => {
+  if (route.hash) {
+    await nextTick();
+    scrollToContent(route.hash);
+  }
 });
 
 useSeoMeta({
@@ -58,19 +146,37 @@ useSeoMeta({
         </template>
       </UPageHeader>
 
-      <UPageBody>
+      <div
+        ref="navLinks"
+        class="bg-default overflow-x-auto sticky top-(--ui-header-height)"
+      >
+        <UFieldGroup>
+          <UButton
+            v-for="link in tocLinks"
+            :key="link.targetId"
+            color="neutral"
+            variant="ghost"
+            class="whitespace-nowrap"
+            @click="scrollToContent(link.targetId)"
+          >
+            {{ link.label }}
+          </UButton>
+        </UFieldGroup>
+      </div>
+
+      <UPageBody class="mt-4 space-y-6">
         <CompanyDetailsCard
           v-if="company.excerpt"
-          id="overview"
-          title="Overview"
+          :id="navLinksMap.excerpt?.targetId"
+          :title="getTitle('excerpt')"
         >
           <p class="text-toned">{{ company.excerpt }}</p>
         </CompanyDetailsCard>
 
         <CompanyDetailsCard
           v-if="company.categories?.length"
-          id="categories"
-          title="Related Categories"
+          :id="navLinksMap.categories?.targetId"
+          :title="getTitle('categories')"
         >
           <div class="flex flex-wrap gap-2">
             <UBadge
@@ -84,9 +190,9 @@ useSeoMeta({
         </CompanyDetailsCard>
 
         <CompanyDetailsCard
-          v-if="company.excerpt"
-          id="details"
-          title="More Details"
+          v-if="company.content"
+          :id="navLinksMap.content?.targetId"
+          :title="getTitle('content')"
         >
           <div
             ref="contentRef"
@@ -97,8 +203,8 @@ useSeoMeta({
 
         <CompanyDetailsCard
           v-if="company.hydratedAlternatives?.length"
-          id="alternatives"
-          :title="`Alternatives to ${company.name}`"
+          :id="navLinksMap.hydratedAlternatives?.targetId"
+          :title="getTitle('hydratedAlternatives')"
         >
           <UPageGrid>
             <CompanyCard
