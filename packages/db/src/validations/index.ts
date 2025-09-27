@@ -36,5 +36,5 @@ export const insertCategorySchema = createInsertSchema(categories, {
   faqs: z.array(faqSchema).nullable(),
 });
 
-export type Category = z.infer<typeof selectCompanySchema>;
+export type Category = z.infer<typeof selectCategorySchema>;
 export type NewCategory = z.infer<typeof insertCategorySchema>;
