@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "exports": {
-    "./companies": "./src/services/companies.ts"
+    "./companies": "./src/services/companies.ts",
+    "./categories": "./src/services/categories.ts"
   },
   "scripts": {
     "lint": "eslint ."
