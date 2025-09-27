@@ -94,7 +94,8 @@ export async function findCompanies(
   }
 
   if (nameQuery) {
-    const nameCondition = ilike(companies.name, `%${nameQuery}%`);
+    const sanitizedQuery = nameQuery.replace(/[%_]/g, '\\$&');
+    const nameCondition = ilike(companies.name, `%${sanitizedQuery}%`);
 
     if (categorySlug) {
       query = query.where(
@@ -193,4 +194,21 @@ export async function findCompaniesByIds(
     .where(inArray(companies.id, ids));
 
   return result;
+}
+
+export async function findCompaniesByCategoryId(
+  categoryId: number,
+  limit: number = 10,
+): Promise<CompanyResult[]> {
+  const db = getDb();
+
+  const results = await db
+    .select(companySelectFields)
+    .from(companies)
+    .innerJoin(companyCategories, eq(companies.id, companyCategories.companyId))
+    .where(eq(companyCategories.categoryId, categoryId))
+    .orderBy(asc(companies.name))
+    .limit(limit);
+
+  return results;
 }
