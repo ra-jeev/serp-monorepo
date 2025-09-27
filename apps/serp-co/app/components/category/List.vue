@@ -7,7 +7,6 @@ defineProps<{
   showAll?: boolean;
   limit?: number;
   hasMore?: boolean;
-  isLoadingMore?: boolean;
 }>();
 
 defineEmits<{
@@ -18,30 +17,26 @@ defineEmits<{
 
 <template>
   <div class="space-y-6">
-    <CategoryGridSkeleton v-if="pending" />
+    <CategoryGrid v-if="categories.length > 0" :categories="categories" />
 
-    <!-- Categories Grid -->
-    <template v-else>
-      <CategoryGrid :categories="categories" />
+    <CategoryGridSkeleton v-if="pending" :limit="limit" />
 
-      <!-- Action Buttons -->
-      <div v-if="categories.length > 0" class="flex justify-center pt-4">
-        <!-- View All Button (for homepage) -->
-        <UButton v-if="!showAll" variant="outline" @click="$emit('view-all')">
-          View All Categories
-        </UButton>
+    <div v-else-if="categories.length > 0" class="flex justify-center pt-4">
+      <UButton v-if="!showAll" variant="outline" @click="$emit('view-all')">
+        View All Categories
+      </UButton>
 
-        <!-- Load More Button (for categories page) -->
-        <UButton
-          v-else-if="hasMore"
-          variant="outline"
-          :loading="isLoadingMore"
-          @click="$emit('load-more')"
-        >
-          <template v-if="isLoadingMore"> Loading... </template>
-          <template v-else> Load More Categories </template>
-        </UButton>
-      </div>
-    </template>
+      <UButton
+        v-else-if="hasMore"
+        color="neutral"
+        variant="subtle"
+        trailing-icon="i-lucide-chevrons-down"
+        :disabled="pending"
+        :loading="pending"
+        @click="$emit('load-more')"
+      >
+        {{ pending ? 'Loading...' : 'View More Categories' }}
+      </UButton>
+    </div>
   </div>
 </template>

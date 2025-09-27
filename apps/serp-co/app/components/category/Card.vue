@@ -14,21 +14,19 @@ defineProps<{
 </script>
 
 <template>
-  <UCard class="h-full hover:shadow-lg transition-all duration-200 text-center">
-    <div class="p-4">
-      <!-- Category Icon/Placeholder -->
+  <UCard
+    :ui="{ body: 'sm:p-4' }"
+    class="group hover:shadow-lg transition-all duration-200"
+  >
+    <div class="flex items-center gap-3">
       <div
-        class="w-12 h-12 mx-auto mb-3 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center group-hover:bg-primary-200 dark:group-hover:bg-primary-800 transition-colors"
+        class="size-8 bg-default rounded-md flex items-center justify-center group-hover:bg-accented transition-colors"
       >
-        <UIcon
-          name="i-lucide-folder"
-          class="w-6 h-6 text-primary-600 dark:text-primary-400"
-        />
+        <UIcon name="i-lucide-folder" class="size-5 text-primary" />
       </div>
 
-      <!-- Category Name -->
       <h3
-        class="font-medium text-sm text-highlighted group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2"
+        class="text-toned font-medium group-hover:text-highlighted transition-colors line-clamp-2"
       >
         {{ category.name }}
       </h3>

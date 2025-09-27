@@ -4,11 +4,13 @@ const { limit = 12 } = defineProps<{ limit?: number }>();
 
 <template>
   <div
-    class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"
+    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
   >
-    <div v-for="i in limit" :key="i" class="space-y-2">
-      <USkeleton class="h-16 rounded-lg" />
-      <USkeleton class="h-4 w-3/4" />
-    </div>
+    <UCard v-for="i in limit" :key="i">
+      <div class="flex items-center gap-3">
+        <USkeleton class="size-8 rounded-md" />
+        <USkeleton class="h-6 w-3/4" />
+      </div>
+    </UCard>
   </div>
 </template>

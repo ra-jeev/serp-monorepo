@@ -8,15 +8,14 @@ defineProps<{
 
 <template>
   <div
-    class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"
+    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
   >
-    <ULink
+    <NuxtLink
       v-for="category in categories"
       :key="category.id"
       :to="`/categories/${category.slug}`"
-      class="group"
     >
       <CategoryCard :category="category" />
-    </ULink>
+    </NuxtLink>
   </div>
 </template>
