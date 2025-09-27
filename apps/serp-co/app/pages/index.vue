@@ -47,6 +47,14 @@ const resultsSectionRef = useTemplateRef('resultsSection');
 function scrollToResultsSection() {
   resultsSectionRef.value?.$el.scrollIntoView({ behavior: 'smooth' });
 }
+
+const { categories, pending: categoriesPending } = useCategories({
+  limit: 12,
+  entityType: 'company',
+});
+function handleViewAllCategories() {
+  navigateTo('/categories');
+}
 </script>
 
 <template>
@@ -65,6 +73,18 @@ function scrollToResultsSection() {
           :ui="{ logo: 'opacity-50' }"
         />
       </UPageHero>
+
+      <UPageSection
+        title="Browse by Category"
+        description="Explore companies by category to find exactly what you need"
+      >
+        <CategoryList
+          :categories="categories"
+          :pending="categoriesPending"
+          :limit="12"
+          @view-all="handleViewAllCategories"
+        />
+      </UPageSection>
 
       <UPageSection ref="resultsSection" title="Search Companies">
         <UInput
