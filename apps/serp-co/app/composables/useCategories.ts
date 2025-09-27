@@ -6,38 +6,33 @@ import type {
 interface UseCategoriesOptions {
   limit?: number;
   entityType?: string;
-  loadMore?: boolean;
+  canLoadMore?: boolean;
 }
 
 export function useCategories(options: UseCategoriesOptions = {}) {
-  const { limit = 20, entityType = 'company', loadMore = false } = options;
+  const { limit = 20, entityType = 'company', canLoadMore = false } = options;
 
-  // Use different cache keys for different contexts
-  const cacheKey = loadMore
-    ? `categories-loadmore-${entityType}`
+  const cacheKey = canLoadMore
+    ? `categories-load-more-${entityType}`
     : `categories-${entityType}-${limit}`;
 
   const page = ref(1);
   const allCategories = ref<CategoryApiResult[]>([]);
-  const isLoadingMore = ref(false);
 
-  const { data, pending, error, refresh } = useAsyncData<CategoryListResponse>(
+  const { data, pending, error } = useAsyncData<CategoryListResponse>(
     cacheKey,
     () =>
       $fetch('/api/categories', {
         params: {
           limit,
           entityType,
-          page: loadMore ? page.value : 1,
+          page: page.value,
         },
       }),
-    {
-      server: !loadMore, // Don't run on server for load more functionality
-    },
+    { watch: [page] },
   );
 
-  // For load more functionality
-  if (loadMore) {
+  if (canLoadMore) {
     watch(
       data,
       (newData) => {
@@ -45,10 +40,7 @@ export function useCategories(options: UseCategoriesOptions = {}) {
           if (page.value === 1) {
             allCategories.value = newData.categories;
           } else {
-            allCategories.value = [
-              ...allCategories.value,
-              ...newData.categories,
-            ];
+            allCategories.value.push(...newData.categories);
           }
         }
       },
@@ -57,28 +49,19 @@ export function useCategories(options: UseCategoriesOptions = {}) {
   }
 
   const loadMoreCategories = async () => {
-    if (!loadMore || !data.value || !data.value.hasMore || isLoadingMore.value)
+    if (!canLoadMore || !data.value || !data.value.hasMore) {
       return;
-
-    isLoadingMore.value = true;
-    page.value++;
-
-    try {
-      await refresh();
-    } finally {
-      isLoadingMore.value = false;
     }
+
+    page.value++;
   };
 
   return {
-    categories: loadMore
-      ? computed(() => allCategories.value)
-      : computed(() => data.value?.categories ?? []),
+    categories: computed(() => allCategories.value),
     total: computed(() => data.value?.total ?? 0),
     hasMore: computed(() => data.value?.hasMore ?? false),
     pending,
     error,
-    isLoadingMore: readonly(isLoadingMore),
     loadMore: loadMoreCategories,
   };
 }
