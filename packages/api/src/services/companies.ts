@@ -14,6 +14,8 @@ import type {
 } from '@serp/db/queries/companies';
 import type { selectCompanySchema } from '@serp/db/validations';
 
+export type { CompanySortOption } from '@serp/db/queries/companies';
+
 const companySearchApiParamsSchema = z.object({
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().positive().max(100).default(50),
