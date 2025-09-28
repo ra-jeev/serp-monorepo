@@ -11,7 +11,6 @@ import {
   type CompanyResult,
 } from '@serp/db/queries/companies';
 
-// API Response Types
 export type CategoryApiResult = {
   id: number;
   name: string;
@@ -40,10 +39,9 @@ export type CategoryDetailResponse = CategoryApiResult & {
   }> | null;
 };
 
-// API Parameter Schemas
 const categoryListParamsSchema = z.object({
   page: z.coerce.number().int().positive().default(1),
-  limit: z.coerce.number().int().positive().max(100).default(50),
+  limit: z.coerce.number().int().positive().max(150).default(50),
   entityType: z.string().trim().min(1).optional(),
   sortBy: categorySortOptions.default('name-asc'),
 });
@@ -71,7 +69,6 @@ export class CategoryService {
 
       const result = await findCategories(filters);
 
-      // Transform DB results to API format
       const categories: CategoryApiResult[] = result.categories.map(
         (cat: CategoryResult) => ({
           id: cat.id,
