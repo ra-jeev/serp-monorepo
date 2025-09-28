@@ -7,19 +7,14 @@ const slug = route.params.slug as string;
 const { category, companies, companyCount, pending, error, buyingGuide, faqs } =
   useCategoryDetails(slug);
 
-useHead(() => ({
+useSeoMeta({
   title: category.value
     ? `${category.value.name} Companies - Find Your Next SaaS`
     : 'Category - Find Your Next SaaS',
-  meta: [
-    {
-      name: 'description',
-      content: category.value
-        ? `Discover the best ${category.value.name.toLowerCase()} companies. Browse ${companyCount.value} companies in this category.`
-        : 'Browse companies by category.',
-    },
-  ],
-}));
+  description: category.value
+    ? `Discover the best ${category.value.name.toLowerCase()} companies. Browse ${companyCount.value} companies in this category.`
+    : 'Browse companies by category.',
+});
 
 const faqItems = computed<AccordionItem[]>(() => {
   if (!faqs.value || faqs.value.length === 0) return [];

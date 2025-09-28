@@ -94,6 +94,10 @@ function clearAllFilters() {
         size="lg"
         :items="categoryOptions"
         :loading="categoriesPending"
+        :search-input="{
+          placeholder: 'Search categories...',
+          icon: 'i-lucide-search',
+        }"
       />
     </div>
 
