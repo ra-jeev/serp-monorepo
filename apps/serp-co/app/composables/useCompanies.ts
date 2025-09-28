@@ -78,7 +78,7 @@ export function useCompanies(options: UseCompaniesOptions = {}) {
   }));
 
   const { data, pending, error } = useAsyncData<CompanyListResponse>(
-    'companies',
+    `companies-${limit}`,
     () => $fetch('/api/companies', { params: queryParams.value }),
     {
       watch: [queryParams],
