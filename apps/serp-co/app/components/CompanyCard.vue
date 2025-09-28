@@ -12,7 +12,7 @@ defineProps<{
 </script>
 
 <template>
-  <NuxtLink :to="`/companies/${company.slug}`">
+  <NuxtLink :to="`/products/${company.slug}/reviews`">
     <UCard
       :ui="{ body: 'p-3 sm:p-3' }"
       class="hover:shadow-lg transition-all duration-200 group"

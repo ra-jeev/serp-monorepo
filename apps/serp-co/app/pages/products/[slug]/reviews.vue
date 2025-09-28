@@ -126,7 +126,7 @@ useSeoMeta({
             icon="i-lucide-arrow-left"
             @click="$router.go(-1)"
           >
-            Back to Companies
+            Back to Products
           </UButton>
         </template>
         <template #title>
