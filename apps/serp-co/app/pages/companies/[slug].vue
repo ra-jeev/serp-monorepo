@@ -179,13 +179,13 @@ useSeoMeta({
           :title="getTitle('categories')"
         >
           <div class="flex flex-wrap gap-2">
-            <UBadge
+            <NuxtLink
               v-for="category in company.categories"
               :key="category.id"
-              :label="category.name"
-              size="lg"
-              variant="subtle"
-            />
+              :to="`/categories/${category.slug}`"
+            >
+              <UBadge :label="category.name" size="xl" variant="subtle" />
+            </NuxtLink>
           </div>
         </CompanyDetailsCard>
 
