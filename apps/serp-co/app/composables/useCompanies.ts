@@ -1,15 +1,20 @@
-import type { CompanyListResponse } from '@serp/api/companies';
+import type {
+  CompanyListResponse,
+  CompanySortOption,
+} from '@serp/api/companies';
 
 interface UseCompaniesOptions {
   limit?: number;
+  defaultSort?: CompanySortOption;
 }
 
 export function useCompanies(options: UseCompaniesOptions = {}) {
-  const { limit = 12 } = options;
+  const { limit = 24, defaultSort = 'name-asc' } = options;
 
   const route = useRoute();
   const router = useRouter();
 
+  let debounceTimer: NodeJS.Timeout;
   const search = computed({
     get: () => String(route.query.search || ''),
     set: (value: string) => {
@@ -17,6 +22,7 @@ export function useCompanies(options: UseCompaniesOptions = {}) {
       debounceTimer = setTimeout(() => {
         router.push({
           query: {
+            ...route.query,
             search: value || undefined,
             page: undefined,
           },
@@ -25,19 +31,48 @@ export function useCompanies(options: UseCompaniesOptions = {}) {
     },
   });
 
-  const page = computed({
-    get: () => Number(route.query.page) || 1,
-    set: (value: number) => {
-      const query: { page?: number; search?: string } = {};
-      if (value > 1) query.page = value;
-      if (route.query.search) query.search = String(route.query.search);
-      router.push({ query });
+  const category = computed({
+    get: () => String(route.query.category || ''),
+    set: (value: string) => {
+      router.push({
+        query: {
+          ...route.query,
+          category: value || undefined,
+          page: undefined,
+        },
+      });
     },
   });
 
-  let debounceTimer: NodeJS.Timeout;
+  const sortBy = computed({
+    get: () => (route.query.sortBy as CompanySortOption) || defaultSort,
+    set: (value: CompanySortOption) => {
+      router.push({
+        query: {
+          ...route.query,
+          sortBy: value === defaultSort ? undefined : value,
+          page: undefined,
+        },
+      });
+    },
+  });
+
+  const page = computed({
+    get: () => Number(route.query.page) || 1,
+    set: (value: number) => {
+      router.push({
+        query: {
+          ...route.query,
+          page: value > 1 ? value : undefined,
+        },
+      });
+    },
+  });
+
   const queryParams = computed(() => ({
     search: route.query.search || undefined,
+    category: route.query.category || undefined,
+    sortBy: route.query.sortBy || undefined,
     page: route.query.page || undefined,
     limit,
   }));
@@ -51,9 +86,13 @@ export function useCompanies(options: UseCompaniesOptions = {}) {
   );
 
   const generatePaginationLink = (p: number) => {
-    const query: { page?: number; search?: string } = {};
-    if (p > 1) query.page = p;
-    if (route.query.search) query.search = String(route.query.search);
+    const query = { ...route.query };
+    if (p > 1) {
+      query.page = p.toString();
+    } else {
+      delete query.page;
+    }
+
     return { query };
   };
 
@@ -70,6 +109,8 @@ export function useCompanies(options: UseCompaniesOptions = {}) {
     limit: readonly(ref(limit)),
 
     search,
+    category,
+    sortBy,
     page,
     pending,
     error,
