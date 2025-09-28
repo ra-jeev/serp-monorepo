@@ -32,21 +32,21 @@ export function useCategories(options: UseCategoriesOptions = {}) {
     { watch: [page] },
   );
 
-  if (canLoadMore) {
-    watch(
-      data,
-      (newData) => {
-        if (newData) {
-          if (page.value === 1) {
-            allCategories.value = newData.categories;
-          } else {
-            allCategories.value.push(...newData.categories);
-          }
-        }
-      },
-      { immediate: true },
-    );
-  }
+  watch(data, (newData) => {
+    if (newData) {
+      if (page.value === 1) {
+        allCategories.value = newData.categories;
+      } else {
+        allCategories.value.push(...newData.categories);
+      }
+    }
+  });
+
+  onMounted(() => {
+    if (data.value) {
+      allCategories.value = data.value.categories;
+    }
+  });
 
   const loadMoreCategories = async () => {
     if (!canLoadMore || !data.value || !data.value.hasMore) {
