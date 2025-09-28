@@ -64,7 +64,7 @@ watch(error, (newError) => {
           We couldn't load the category details. Please try again.
         </p>
         <div class="flex justify-center gap-4">
-          <UButton to="/categories"> Browse Categories </UButton>
+          <UButton to="/products/best"> Browse Categories </UButton>
           <UButton variant="outline" @click="$router.go(-1)"> Go Back </UButton>
         </div>
       </div>
@@ -77,7 +77,7 @@ watch(error, (newError) => {
                 variant="ghost"
                 size="sm"
                 icon="i-lucide-arrow-left"
-                to="/categories"
+                to="/products/best"
               >
                 Back to Categories
               </UButton>

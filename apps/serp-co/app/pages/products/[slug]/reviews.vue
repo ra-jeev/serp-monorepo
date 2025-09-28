@@ -184,7 +184,7 @@ useSeoMeta({
             <NuxtLink
               v-for="category in company.categories"
               :key="category.id"
-              :to="`/categories/${category.slug}`"
+              :to="`/products/best/${category.slug}`"
             >
               <UBadge :label="category.name" size="xl" variant="subtle" />
             </NuxtLink>

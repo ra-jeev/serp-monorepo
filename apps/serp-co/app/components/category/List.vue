@@ -26,7 +26,7 @@ defineEmits<{
         color="neutral"
         trailing-icon="i-lucide-arrow-right"
         variant="subtle"
-        to="/categories"
+        to="/products/best"
       >
         View All Categories
       </UButton>

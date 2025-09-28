@@ -48,7 +48,7 @@ const {
 });
 
 function handleViewAllCategories() {
-  navigateTo('/categories');
+  navigateTo('/products/best');
 }
 </script>
 

@@ -13,7 +13,7 @@ defineProps<{
     <NuxtLink
       v-for="category in categories"
       :key="category.id"
-      :to="`/categories/${category.slug}`"
+      :to="`/products/best/${category.slug}`"
     >
       <CategoryCard :category="category" />
     </NuxtLink>
