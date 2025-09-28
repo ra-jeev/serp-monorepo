@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// This type should match the 'companies' array from useCompanies()
 type Company = {
   id: number;
   name: string;
@@ -14,6 +13,7 @@ defineProps<{
   pending: boolean;
   search?: string;
   total?: number;
+  limit?: number;
 }>();
 
 defineEmits(['clear-search']);

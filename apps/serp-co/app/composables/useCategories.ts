@@ -10,7 +10,7 @@ interface UseCategoriesOptions {
 }
 
 export function useCategories(options: UseCategoriesOptions = {}) {
-  const { limit = 20, entityType = 'company', canLoadMore = false } = options;
+  const { limit = 24, entityType = 'company', canLoadMore = false } = options;
 
   const cacheKey = canLoadMore
     ? `categories-load-more-${entityType}`
@@ -60,6 +60,7 @@ export function useCategories(options: UseCategoriesOptions = {}) {
     categories: computed(() => allCategories.value),
     total: computed(() => data.value?.total ?? 0),
     hasMore: computed(() => data.value?.hasMore ?? false),
+    limit: readonly(ref(limit)),
     pending,
     error,
     loadMore: loadMoreCategories,

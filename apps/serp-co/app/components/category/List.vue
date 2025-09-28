@@ -10,7 +10,6 @@ defineProps<{
 }>();
 
 defineEmits<{
-  'view-all': [];
   'load-more': [];
 }>();
 </script>
@@ -22,7 +21,13 @@ defineEmits<{
     <CategoryGridSkeleton v-if="pending" :limit="limit" />
 
     <div v-else-if="categories.length > 0" class="flex justify-center pt-4">
-      <UButton v-if="!showAll" variant="outline" @click="$emit('view-all')">
+      <UButton
+        v-if="!showAll"
+        color="neutral"
+        trailing-icon="i-lucide-arrow-right"
+        variant="subtle"
+        to="/categories"
+      >
         View All Categories
       </UButton>
 

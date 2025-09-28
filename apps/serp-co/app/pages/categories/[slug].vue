@@ -7,7 +7,6 @@ const slug = route.params.slug as string;
 const { category, companies, companyCount, pending, error, buyingGuide, faqs } =
   useCategoryDetails(slug);
 
-// SEO and meta
 useHead(() => ({
   title: category.value
     ? `${category.value.name} Companies - Find Your Next SaaS`
@@ -43,79 +42,77 @@ watch(error, (newError) => {
 </script>
 
 <template>
-  <UPage>
-    <UPageBody>
-      <UContainer>
-        <div v-if="pending" class="space-y-8">
-          <div class="space-y-4">
-            <USkeleton class="h-4 w-24" />
-            <USkeleton class="h-8 w-64" />
-            <USkeleton class="h-4 w-96" />
-          </div>
-          <div
-            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-          >
-            <USkeleton v-for="i in 8" :key="i" class="h-48 rounded-lg" />
-          </div>
+  <UContainer>
+    <UPage>
+      <div v-if="pending" class="space-y-8">
+        <div class="space-y-4">
+          <USkeleton class="h-4 w-24" />
+          <USkeleton class="h-8 w-64" />
+          <USkeleton class="h-4 w-96" />
         </div>
-
-        <div v-else-if="error" class="text-center py-12">
-          <UIcon
-            name="i-lucide-alert-circle"
-            class="size-12 text-red-500 mx-auto mb-4"
-          />
-          <h2 class="text-xl font-semibold text-highlighted mb-2">
-            Something went wrong
-          </h2>
-          <p class="text-muted mb-6">
-            We couldn't load the category details. Please try again.
-          </p>
-          <div class="flex justify-center gap-4">
-            <UButton to="/categories"> Browse Categories </UButton>
-            <UButton variant="outline" @click="$router.go(-1)">
-              Go Back
-            </UButton>
-          </div>
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+        >
+          <USkeleton v-for="i in 8" :key="i" class="h-48 rounded-lg" />
         </div>
+      </div>
 
-        <div v-else-if="category" class="space-y-12">
-          <UPageHeader class="pb-8">
-            <template #headline>
-              <div class="flex items-center gap-2">
-                <UButton
-                  variant="ghost"
-                  size="sm"
-                  icon="i-lucide-arrow-left"
-                  to="/categories"
-                >
-                  Back to Categories
-                </UButton>
+      <div v-else-if="error" class="text-center py-12">
+        <UIcon
+          name="i-lucide-alert-circle"
+          class="size-12 text-red-500 mx-auto mb-4"
+        />
+        <h2 class="text-xl font-semibold text-highlighted mb-2">
+          Something went wrong
+        </h2>
+        <p class="text-muted mb-6">
+          We couldn't load the category details. Please try again.
+        </p>
+        <div class="flex justify-center gap-4">
+          <UButton to="/categories"> Browse Categories </UButton>
+          <UButton variant="outline" @click="$router.go(-1)"> Go Back </UButton>
+        </div>
+      </div>
+
+      <template v-else-if="category">
+        <UPageHeader class="pb-8">
+          <template #headline>
+            <div class="flex items-center gap-2">
+              <UButton
+                variant="ghost"
+                size="sm"
+                icon="i-lucide-arrow-left"
+                to="/categories"
+              >
+                Back to Categories
+              </UButton>
+            </div>
+          </template>
+
+          <template #title>
+            <div class="flex items-center gap-4">
+              <div
+                class="w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-xl flex items-center justify-center"
+              >
+                <UIcon
+                  name="i-lucide-folder"
+                  class="w-8 h-8 text-primary-600 dark:text-primary-400"
+                />
               </div>
-            </template>
-
-            <template #title>
-              <div class="flex items-center gap-4">
-                <div
-                  class="w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-xl flex items-center justify-center"
-                >
-                  <UIcon
-                    name="i-lucide-folder"
-                    class="w-8 h-8 text-primary-600 dark:text-primary-400"
-                  />
-                </div>
-                <div>
-                  <h1 class="text-3xl font-bold text-highlighted">
-                    {{ category.name }}
-                  </h1>
-                  <p class="text-lg text-toned mt-1">
-                    {{ companyCount }}
-                    {{ companyCount === 1 ? 'company' : 'companies' }}
-                  </p>
-                </div>
+              <div>
+                <h1 class="text-3xl font-bold text-highlighted">
+                  {{ category.name }}
+                </h1>
+                <p class="text-lg text-toned mt-1">
+                  {{ companyCount }}
+                  {{ companyCount === 1 ? 'company' : 'companies' }}
+                </p>
               </div>
-            </template>
-          </UPageHeader>
+            </div>
+          </template>
+        </UPageHeader>
 
+        <UPageBody>
           <div v-if="buyingGuide" class="space-y-6">
             <h2 class="text-2xl font-bold text-highlighted">
               {{ category.name }} Buying Guide
@@ -163,8 +160,8 @@ watch(error, (newError) => {
             </h2>
             <UAccordion :items="faqItems" default-value="0" />
           </div>
-        </div>
-      </UContainer>
-    </UPageBody>
-  </UPage>
+        </UPageBody>
+      </template>
+    </UPage>
+  </UContainer>
 </template>
