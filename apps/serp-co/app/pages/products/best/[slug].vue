@@ -96,7 +96,7 @@ watch(error, (newError) => {
               </div>
               <div>
                 <h1 class="text-3xl font-bold text-highlighted">
-                  {{ category.name }}
+                  The Best {{ category.name }} Companies
                 </h1>
                 <p class="text-lg text-toned mt-1">
                   {{ companyCount }}
