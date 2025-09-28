@@ -46,7 +46,6 @@ watch(error, (newError) => {
   <UPage>
     <UPageBody>
       <UContainer>
-        <!-- Loading State -->
         <div v-if="pending" class="space-y-8">
           <div class="space-y-4">
             <USkeleton class="h-4 w-24" />
@@ -60,7 +59,6 @@ watch(error, (newError) => {
           </div>
         </div>
 
-        <!-- Error State -->
         <div v-else-if="error" class="text-center py-12">
           <UIcon
             name="i-lucide-alert-circle"
@@ -80,9 +78,7 @@ watch(error, (newError) => {
           </div>
         </div>
 
-        <!-- Category Details -->
         <div v-else-if="category" class="space-y-12">
-          <!-- Category Header -->
           <UPageHeader class="pb-8">
             <template #headline>
               <div class="flex items-center gap-2">
@@ -120,7 +116,6 @@ watch(error, (newError) => {
             </template>
           </UPageHeader>
 
-          <!-- Buying Guide Section -->
           <div v-if="buyingGuide" class="space-y-6">
             <h2 class="text-2xl font-bold text-highlighted">
               {{ category.name }} Buying Guide
@@ -133,7 +128,6 @@ watch(error, (newError) => {
             </UCard>
           </div>
 
-          <!-- Companies Section -->
           <div class="space-y-6">
             <h2 class="text-2xl font-bold text-highlighted">
               Companies in {{ category.name }}
@@ -153,19 +147,16 @@ watch(error, (newError) => {
             </div>
 
             <div v-else>
-              <div
-                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-              >
+              <UPageGrid>
                 <CompanyCard
                   v-for="company in companies"
                   :key="company.id"
                   :company="company"
                 />
-              </div>
+              </UPageGrid>
             </div>
           </div>
 
-          <!-- FAQs Section -->
           <div v-if="faqs && faqs.length > 0" class="space-y-6">
             <h2 class="text-2xl font-bold text-highlighted">
               Frequently Asked Questions
