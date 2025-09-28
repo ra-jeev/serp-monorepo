@@ -10,6 +10,8 @@ useSeoMeta({
   description:
     'Browse all software categories to discover companies by type and find the perfect solution for your needs.',
 });
+
+const { breadcrumbs } = useBreadcrumbs();
 </script>
 
 <template>
@@ -20,9 +22,7 @@ useSeoMeta({
         description="Explore all software categories to find companies that match your specific needs."
       >
         <template #headline>
-          <UButton variant="ghost" icon="i-lucide-arrow-left" to="/">
-            Back to Home
-          </UButton>
+          <UBreadcrumb class="mb-6" :items="breadcrumbs" />
         </template>
       </UPageHeader>
 

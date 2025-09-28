@@ -44,6 +44,8 @@ const categoryObject = computed({
     category.value = value?.value || '';
   },
 });
+
+const { breadcrumbs } = useBreadcrumbs();
 </script>
 
 <template>
@@ -52,7 +54,11 @@ const categoryObject = computed({
       <UPageHeader
         title="Browse Products"
         description="Discover and compare software companies with powerful search and filtering options."
-      />
+      >
+        <template #headline>
+          <UBreadcrumb class="mb-6" :items="breadcrumbs" />
+        </template>
+      </UPageHeader>
 
       <UPageBody>
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">

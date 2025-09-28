@@ -34,6 +34,12 @@ watch(error, (newError) => {
     });
   }
 });
+
+const { breadcrumbs } = useBreadcrumbs(
+  computed(() => ({
+    categoryName: category.value?.name,
+  })),
+);
 </script>
 
 <template>
@@ -72,16 +78,7 @@ watch(error, (newError) => {
       <template v-else-if="category">
         <UPageHeader class="pb-8">
           <template #headline>
-            <div class="flex items-center gap-2">
-              <UButton
-                variant="ghost"
-                size="sm"
-                icon="i-lucide-arrow-left"
-                to="/products/best"
-              >
-                Back to Categories
-              </UButton>
-            </div>
+            <UBreadcrumb class="mb-6" :items="breadcrumbs" />
           </template>
 
           <template #title>

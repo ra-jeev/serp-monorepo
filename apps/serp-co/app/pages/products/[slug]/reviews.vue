@@ -114,6 +114,12 @@ useSeoMeta({
   title: () => company.value?.name || 'Company',
   description: () => company.value?.oneLiner,
 });
+
+const { breadcrumbs } = useBreadcrumbs(
+  computed(() => ({
+    companyName: company.value?.name,
+  })),
+);
 </script>
 
 <template>
@@ -121,13 +127,7 @@ useSeoMeta({
     <UPage>
       <UPageHeader :links="companyLinks">
         <template #headline>
-          <UButton
-            variant="link"
-            icon="i-lucide-arrow-left"
-            @click="$router.go(-1)"
-          >
-            Back to Products
-          </UButton>
+          <UBreadcrumb class="mb-6" :items="breadcrumbs" />
         </template>
         <template #title>
           <div class="flex items-center gap-6">
