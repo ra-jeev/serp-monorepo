@@ -7,7 +7,7 @@ const links = ref([
   {
     label: 'Search Companies',
     icon: 'i-lucide-search',
-    onClick: scrollToResultsSection,
+    to: '/products',
   },
 ]);
 
@@ -22,14 +22,9 @@ const logos = [
   'i-simple-icons-shopify',
 ];
 
-useHead({
+useSeoMeta({
   title: 'Find Your Next SaaS - Discover the Best Software Companies',
-  meta: [
-    {
-      name: 'description',
-      content: description.value,
-    },
-  ],
+  description: description.value,
 });
 
 const {
@@ -39,19 +34,19 @@ const {
   pending,
   search,
   page,
-  limit,
+  limit: companiesLimit,
   generatePaginationLink,
 } = useCompanies({ limit: 12 });
 
-const resultsSectionRef = useTemplateRef('resultsSection');
-function scrollToResultsSection() {
-  resultsSectionRef.value?.$el.scrollIntoView({ behavior: 'smooth' });
-}
-
-const { categories, pending: categoriesPending } = useCategories({
-  limit: 12,
+const {
+  categories,
+  limit: categoriesLimit,
+  pending: categoriesPending,
+} = useCategories({
+  limit: 24,
   entityType: 'company',
 });
+
 function handleViewAllCategories() {
   navigateTo('/categories');
 }
@@ -74,42 +69,42 @@ function handleViewAllCategories() {
         />
       </UPageHero>
 
-      <UPageSection
-        title="Browse by Category"
-        description="Explore companies by category to find exactly what you need"
-      >
-        <CategoryList
-          :categories="categories"
-          :pending="categoriesPending"
-          :limit="12"
-          @view-all="handleViewAllCategories"
-        />
-      </UPageSection>
+      <UPageSection title="Search Companies">
+        <div class="flex flex-col items-center gap-4">
+          <UInput
+            v-model="search"
+            icon="i-lucide-search"
+            size="xl"
+            placeholder="Search companies..."
+            class="w-full max-w-2xl"
+            color="neutral"
+            variant="subtle"
+          >
+            <template v-if="search.length" #trailing>
+              <UButton
+                color="neutral"
+                variant="link"
+                size="md"
+                icon="i-lucide-circle-x"
+                aria-label="Clear search"
+                @click="search = ''"
+              />
+            </template>
+          </UInput>
 
-      <UPageSection ref="resultsSection" title="Search Companies">
-        <UInput
-          v-model="search"
-          icon="i-lucide-search"
-          size="xl"
-          placeholder="Search companies..."
-          class="w-full max-w-2xl mx-auto"
-          color="neutral"
-          variant="subtle"
-        >
-          <template v-if="search.length" #trailing>
-            <UButton
-              color="neutral"
-              variant="link"
-              size="md"
-              icon="i-lucide-circle-x"
-              aria-label="Clear search"
-              @click="search = ''"
-            />
-          </template>
-        </UInput>
+          <UButton
+            to="/products"
+            color="neutral"
+            variant="soft"
+            icon="i-lucide-sliders-horizontal"
+          >
+            Advanced Search & Filters
+          </UButton>
+        </div>
 
         <CompanyList
           :companies="companies"
+          :limit="companiesLimit"
           :pending="pending"
           :search="search"
           :total="total"
@@ -119,12 +114,24 @@ function handleViewAllCategories() {
         <div v-if="!pending && totalPages > 1" class="flex justify-center">
           <UPagination
             v-model:page="page"
-            :items-per-page="limit"
+            :items-per-page="companiesLimit"
             :to="generatePaginationLink"
             :total="total"
             size="lg"
           />
         </div>
+      </UPageSection>
+
+      <UPageSection
+        title="Browse by Category"
+        description="Explore companies by category to find exactly what you need"
+      >
+        <CategoryList
+          :categories="categories"
+          :limit="categoriesLimit"
+          :pending="categoriesPending"
+          @view-all="handleViewAllCategories"
+        />
       </UPageSection>
     </UPageBody>
   </UPage>
