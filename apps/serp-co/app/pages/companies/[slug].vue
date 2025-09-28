@@ -70,7 +70,9 @@ const tocLinks = computed(() => {
   for (const key of Object.keys(navLinksMap)) {
     const _key = key as keyof CompanyDetailResponse;
     const value = data[_key];
-    if ((Array.isArray(value) && value.length) || Boolean(value)) {
+
+    const addLink = Array.isArray(value) ? value.length > 0 : Boolean(value);
+    if (addLink) {
       const link = navLinksMap[_key];
       if (link) {
         if (_key === 'hydratedAlternatives') {
