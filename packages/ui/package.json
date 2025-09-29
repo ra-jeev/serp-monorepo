@@ -9,6 +9,8 @@
     "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
+    "@iconify-json/lucide": "^1.2.68",
+    "@iconify-json/simple-icons": "^1.2.53",
     "@nuxt/ui": "4.0.0",
     "@serp/eslint-config": "workspace:*",
     "@types/node": "^24.5.2",
