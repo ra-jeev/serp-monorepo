@@ -1,14 +1,15 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
 
-let pool: Pool | null = null;
+let globalDb: ReturnType<typeof drizzle> | null = null;
 
 export function getDb() {
-  if (!pool) {
-    pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
-    });
+  if (!process.env.DATABASE_URL) {
+    throw new Error('DATABASE_URL environment variable is not set');
   }
 
-  return drizzle(pool);
+  if (!globalDb) {
+    globalDb = drizzle(process.env.DATABASE_URL);
+  }
+
+  return globalDb;
 }
