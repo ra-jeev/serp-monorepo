@@ -7,9 +7,9 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   nitro: {
     preset: 'cloudflare_module',
-    // rollupConfig: {
-    //   external: ['pg-native'],
-    // },
+    rollupConfig: {
+      external: ['pg-native'],
+    },
     cloudflare: {
       deployConfig: true,
       nodeCompat: true,
