@@ -9,10 +9,10 @@
     "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
-    "@nuxt/ui": "4.0.0-alpha.2",
+    "@nuxt/ui": "4.0.0",
     "@serp/eslint-config": "workspace:*",
-    "@types/node": "^24.3.1",
-    "nuxt": "^4.1.1",
+    "@types/node": "^24.5.2",
+    "nuxt": "^4.1.2",
     "vue": "latest"
   }
 }

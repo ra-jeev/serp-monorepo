@@ -25,8 +25,8 @@
   "devDependencies": {
     "@serp/eslint-config": "workspace:*",
     "@types/pg": "^8.15.5",
-    "drizzle-kit": "^0.31.4",
+    "drizzle-kit": "^0.31.5",
     "drizzle-zod": "^0.8.3",
-    "tsx": "^4.20.5"
+    "tsx": "^4.20.6"
   }
 }
