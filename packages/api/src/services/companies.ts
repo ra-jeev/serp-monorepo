@@ -14,6 +14,8 @@ import type {
 } from '@serp/db/queries/companies';
 import type { selectCompanySchema } from '@serp/db/validations';
 
+export type { CompanyResult } from '@serp/db/queries/companies';
+
 export type { CompanySortOption } from '@serp/db/queries/companies';
 
 const companySearchApiParamsSchema = z.object({

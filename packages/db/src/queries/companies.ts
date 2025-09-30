@@ -69,8 +69,8 @@ export async function findCompanies(
 ): Promise<CompanyQueryResult> {
   const db = getDb();
 
-  const { categorySlug, nameQuery, sortBy, limit, offset }
-    = companyFiltersSchema.parse(filters);
+  const { categorySlug, nameQuery, sortBy, limit, offset } =
+    companyFiltersSchema.parse(filters);
 
   let query = db.select(companySelectFields).from(companies).$dynamic();
   let countQuery = db.select({ count: count() }).from(companies).$dynamic();

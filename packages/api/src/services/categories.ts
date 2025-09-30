@@ -3,40 +3,27 @@ import {
   findCategoryBySlug,
   findCategories,
   categorySortOptions,
+  type CategoryQueryResult,
   type CategoryFilters,
-  type CategoryResult,
 } from '@serp/db/queries/categories';
 import {
   findCompaniesByCategoryId,
   type CompanyResult,
 } from '@serp/db/queries/companies';
 
-export type CategoryApiResult = {
-  id: number;
-  name: string;
-  slug: string;
-  entityType: string;
-  createdAt: Date;
-  updatedAt: Date;
-};
+import type { selectCategorySchema } from '@serp/db/validations';
 
-export type CategoryListResponse = {
-  categories: CategoryApiResult[];
-  total: number;
-  hasMore: boolean;
+export type { CategoryResult } from '@serp/db/queries/categories';
+
+export type CategoryListResponse = CategoryQueryResult & {
   page: number;
   limit: number;
   totalPages: number;
 };
 
-export type CategoryDetailResponse = CategoryApiResult & {
+export type CategoryDetailResponse = z.infer<typeof selectCategorySchema> & {
   companies: CompanyResult[];
   companyCount: number;
-  buyingGuide?: string | null;
-  faqs?: Array<{
-    question: string;
-    answer: string;
-  }> | null;
 };
 
 const categoryListParamsSchema = z.object({
@@ -69,21 +56,8 @@ export class CategoryService {
 
       const result = await findCategories(filters);
 
-      const categories: CategoryApiResult[] = result.categories.map(
-        (cat: CategoryResult) => ({
-          id: cat.id,
-          name: cat.name,
-          slug: cat.slug,
-          entityType: cat.entityType,
-          createdAt: cat.createdAt,
-          updatedAt: cat.updatedAt,
-        }),
-      );
-
       return {
-        categories,
-        total: result.total,
-        hasMore: result.hasMore,
+        ...result,
         page,
         limit,
         totalPages: Math.ceil(result.total / limit),
@@ -118,16 +92,9 @@ export class CategoryService {
       );
 
       return {
-        id: category.id,
-        name: category.name,
-        slug: category.slug,
-        entityType: category.entityType,
-        createdAt: category.createdAt,
-        updatedAt: category.updatedAt,
+        ...category,
         companies,
         companyCount: companies.length,
-        buyingGuide: category.buyingGuide,
-        faqs: category.faqs,
       };
     } catch (error) {
       if (error instanceof z.ZodError) {
