@@ -1,12 +1,5 @@
 <script setup lang="ts">
-import type { CompanySortOption } from '@serp/api/companies';
-
-type Category = {
-  id: number;
-  name: string;
-  slug: string;
-  entityType: string;
-};
+import type { Category, CompanySortOption } from '~/types';
 
 const { categories } = defineProps<{
   categories: Category[];

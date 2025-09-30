@@ -1,4 +1,4 @@
-import type { CompanyDetailResponse } from '@serp/api/companies';
+import type { CompanyDetailResponse } from '~/types';
 
 export const useCompanyDetails = (slug: string) => {
   const { data, pending, error, refresh } = useFetch<CompanyDetailResponse>(

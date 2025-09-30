@@ -1,14 +1,7 @@
 <script setup lang="ts">
-defineProps<{
-  company: {
-    id: number;
-    name: string;
-    slug: string;
-    logo: string | null;
-    oneLiner: string | null;
-    excerpt: string | null;
-  };
-}>();
+import type { Company } from '~/types';
+
+defineProps<{ company: Company }>();
 </script>
 
 <template>

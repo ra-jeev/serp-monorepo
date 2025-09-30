@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Category } from '@/components/category/Card.vue';
+import type { Category } from '~/types';
 
 defineProps<{
   categories: Category[];

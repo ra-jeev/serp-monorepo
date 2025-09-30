@@ -1,4 +1,4 @@
-import type { CategoryDetailResponse } from '@serp/api/categories';
+import type { CategoryDetailResponse } from '~/types';
 
 export function useCategoryDetails(
   slug: string,

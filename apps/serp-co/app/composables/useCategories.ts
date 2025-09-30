@@ -1,7 +1,4 @@
-import type {
-  CategoryApiResult,
-  CategoryListResponse,
-} from '@serp/api/categories';
+import type { Category, CategoryListResponse } from '~/types';
 
 interface UseCategoriesOptions {
   limit?: number;
@@ -17,7 +14,7 @@ export function useCategories(options: UseCategoriesOptions = {}) {
     : `categories-${entityType}-${limit}`;
 
   const page = ref(1);
-  const allCategories = ref<CategoryApiResult[]>([]);
+  const allCategories = ref<Category[]>([]);
 
   const { data, pending, error } = useAsyncData<CategoryListResponse>(
     cacheKey,

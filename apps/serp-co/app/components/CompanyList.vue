@@ -1,12 +1,5 @@
 <script setup lang="ts">
-type Company = {
-  id: number;
-  name: string;
-  slug: string;
-  logo: string | null;
-  oneLiner: string | null;
-  excerpt: string | null;
-};
+import type { Company } from '~/types';
 
 defineProps<{
   companies: Company[];

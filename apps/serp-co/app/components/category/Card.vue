@@ -1,12 +1,5 @@
 <script setup lang="ts">
-export type Category = {
-  id: number;
-  name: string;
-  slug: string;
-  entityType: string;
-  createdAt: Date;
-  updatedAt: Date;
-};
+import type { Category } from '~/types';
 
 defineProps<{
   category: Category;

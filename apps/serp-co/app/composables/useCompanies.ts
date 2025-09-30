@@ -1,7 +1,4 @@
-import type {
-  CompanyListResponse,
-  CompanySortOption,
-} from '@serp/api/companies';
+import type { CompanyListResponse, CompanySortOption } from '~/types';
 
 interface UseCompaniesOptions {
   limit?: number;
