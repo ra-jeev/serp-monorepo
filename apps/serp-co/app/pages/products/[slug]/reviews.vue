@@ -91,11 +91,19 @@ const tocLinks = computed(() => {
 });
 
 const router = useRouter();
-function scrollToContent(id: string) {
+const scrollTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
+
+async function scrollToContent(id: string) {
   const element = document.getElementById(id);
   if (element) {
-    router.push({ hash: `#${id}` });
     element.scrollIntoView({ behavior: 'smooth' });
+    if (scrollTimeout.value) {
+      clearTimeout(scrollTimeout.value);
+    }
+
+    scrollTimeout.value = setTimeout(() => {
+      router.push({ hash: `#${id}` });
+    }, 1000);
   }
 }
 
@@ -107,6 +115,12 @@ onMounted(async () => {
   if (route.hash) {
     await nextTick();
     scrollToContent(route.hash);
+  }
+});
+
+onUnmounted(() => {
+  if (scrollTimeout.value) {
+    clearTimeout(scrollTimeout.value);
   }
 });
 
