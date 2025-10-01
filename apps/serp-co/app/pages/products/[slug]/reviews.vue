@@ -167,15 +167,15 @@ const { breadcrumbs } = useBreadcrumbs(
       </div>
 
       <UPageBody class="mt-4 space-y-6">
-        <CompanyDetailsCard
+        <CompanyDetailSection
           v-if="company.excerpt"
           :id="navLinksMap.excerpt?.targetId"
           :title="getTitle('excerpt')"
         >
           <p class="text-toned">{{ company.excerpt }}</p>
-        </CompanyDetailsCard>
+        </CompanyDetailSection>
 
-        <CompanyDetailsCard
+        <CompanyDetailSection
           v-if="company.categories?.length"
           :id="navLinksMap.categories?.targetId"
           :title="getTitle('categories')"
@@ -189,9 +189,9 @@ const { breadcrumbs } = useBreadcrumbs(
               <UBadge :label="category.name" size="xl" variant="subtle" />
             </NuxtLink>
           </div>
-        </CompanyDetailsCard>
+        </CompanyDetailSection>
 
-        <CompanyDetailsCard
+        <CompanyDetailSection
           v-if="company.content"
           :id="navLinksMap.content?.targetId"
           :title="getTitle('content')"
@@ -201,15 +201,15 @@ const { breadcrumbs } = useBreadcrumbs(
             class="prose prose-primary dark:prose-invert max-w-none"
             v-html="company.content"
           />
-        </CompanyDetailsCard>
+        </CompanyDetailSection>
 
-        <CompanyDetailsCard
+        <CompanyDetailSection
           v-if="company.hydratedAlternatives?.length"
           :id="navLinksMap.hydratedAlternatives?.targetId"
           :title="getTitle('hydratedAlternatives')"
         >
           <CompanyCollection :companies="company.hydratedAlternatives" />
-        </CompanyDetailsCard>
+        </CompanyDetailSection>
       </UPageBody>
     </UPage>
   </UContainer>
