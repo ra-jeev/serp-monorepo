@@ -10,3 +10,5 @@ export type {
   CategoryListResponse,
   CategoryDetailResponse,
 } from '@serp/api/categories';
+
+export type ViewMode = 'list' | 'grid';

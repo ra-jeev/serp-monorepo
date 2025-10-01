@@ -102,12 +102,17 @@ function handleViewAllCategories() {
           </UButton>
         </div>
 
-        <CompanyList
+        <div v-if="total" class="text-center text-muted">
+          {{ total.toLocaleString() }}
+          {{ total === 1 ? 'company found' : 'companies found' }}
+          <template v-if="search">for "{{ search }}"</template>
+        </div>
+
+        <CompanyCollection
           :companies="companies"
           :limit="companiesLimit"
           :pending="pending"
           :search="search"
-          :total="total"
           @clear-search="search = ''"
         />
 

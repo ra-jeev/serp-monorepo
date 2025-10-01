@@ -208,13 +208,7 @@ const { breadcrumbs } = useBreadcrumbs(
           :id="navLinksMap.hydratedAlternatives?.targetId"
           :title="getTitle('hydratedAlternatives')"
         >
-          <UPageGrid>
-            <CompanyCard
-              v-for="altCompany in company.hydratedAlternatives"
-              :key="altCompany.id"
-              :company="altCompany"
-            />
-          </UPageGrid>
+          <CompanyCollection :companies="company.hydratedAlternatives" />
         </CompanyDetailsCard>
       </UPageBody>
     </UPage>

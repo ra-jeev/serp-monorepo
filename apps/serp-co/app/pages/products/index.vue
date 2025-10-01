@@ -16,7 +16,8 @@ const {
   page,
   limit,
   generatePaginationLink,
-} = useCompanies({ limit: 50 });
+  viewMode,
+} = useCompanies({ limit: 24 });
 
 const { categories, pending: categoriesPending } = useCategories({
   limit: 150,
@@ -63,83 +64,73 @@ const { breadcrumbs } = useBreadcrumbs();
       <UPageBody>
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <div class="lg:col-span-1">
-            <div class="sticky top-(--ui-header-height)">
-              <UCard>
-                <template #header>
-                  <h2 class="text-lg font-semibold text-highlighted">
-                    Filter & Search
-                  </h2>
-                </template>
-
-                <CompaniesFilter
-                  v-model:search="search"
-                  v-model:category="categoryObject"
-                  v-model:sort-by="sortBy"
-                  :categories="categories"
-                  :categories-pending="categoriesPending"
-                />
-              </UCard>
-            </div>
+            <CompanyFilters
+              v-model:search="search"
+              v-model:category="categoryObject"
+              v-model:sort-by="sortBy"
+              class="sticky top-(--ui-header-height)"
+              :categories="categories"
+              :categories-pending="categoriesPending"
+            />
           </div>
 
           <div class="lg:col-span-3 space-y-6">
-            <div class="flex items-center justify-between">
-              <div>
-                <div
-                  v-if="!pending && total > 0"
-                  class="flex items-center gap-3"
-                >
-                  <UBadge variant="subtle" size="lg">
-                    {{ total.toLocaleString() }}
-                    {{ total === 1 ? 'company' : 'companies' }}
-                  </UBadge>
-                  <div v-if="search || category" class="text-sm text-muted">
-                    <template v-if="search && category">
-                      for "{{ search }}" in
-                      {{ categories.find((c) => c.slug === category)?.name }}
-                    </template>
-                    <template v-else-if="search"> for "{{ search }}" </template>
-                    <template v-else-if="category">
-                      in {{ categories.find((c) => c.slug === category)?.name }}
-                    </template>
-                  </div>
+            <div
+              v-if="!pending && total > 0"
+              class="flex items-center justify-between"
+            >
+              <div class="flex items-center gap-3">
+                <UBadge color="neutral" variant="subtle" size="lg">
+                  {{ total.toLocaleString() }}
+                  {{ total === 1 ? 'company' : 'companies' }}
+                </UBadge>
+                <div v-if="search || category" class="text-sm text-muted">
+                  <template v-if="search"> for "{{ search }}" </template>
+                  <template v-if="categoryObject">
+                    in {{ categoryObject.label }}
+                  </template>
                 </div>
               </div>
 
               <div class="hidden sm:flex items-center gap-2">
                 <span class="text-sm text-muted">View:</span>
                 <UFieldGroup size="sm">
-                  <UButton variant="soft" icon="i-lucide-grid-3x3">
+                  <UButton
+                    icon="i-lucide-grid-2x2"
+                    variant="subtle"
+                    :color="viewMode === 'grid' ? 'primary' : 'neutral'"
+                    @click="viewMode = 'grid'"
+                  >
                     Grid
                   </UButton>
-                  <UButton variant="ghost" icon="i-lucide-list" disabled>
+                  <UButton
+                    icon="i-lucide-list"
+                    variant="subtle"
+                    :color="viewMode === 'list' ? 'primary' : 'neutral'"
+                    @click="viewMode = 'list'"
+                  >
                     List
                   </UButton>
                 </UFieldGroup>
               </div>
             </div>
 
-            <CompanyList
+            <CompanyCollection
+              has-sidebar
               :companies="companies"
               :pending="pending"
               :search="search"
-              :total="total"
-              @reset-search="search = ''"
+              :view-mode="viewMode"
+              @clear-search="search = ''"
             />
 
-            <div
-              v-if="!pending && totalPages > 1"
-              class="flex justify-center pt-8"
-            >
+            <div v-if="!pending && totalPages > 1" class="flex justify-center">
               <UPagination
                 v-model:page="page"
                 :items-per-page="limit"
                 :to="generatePaginationLink"
                 :total="total"
                 size="lg"
-                :max="7"
-                show-first
-                show-last
               />
             </div>
           </div>

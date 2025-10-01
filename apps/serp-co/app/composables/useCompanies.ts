@@ -1,4 +1,4 @@
-import type { CompanyListResponse, CompanySortOption } from '~/types';
+import type { CompanyListResponse, CompanySortOption, ViewMode } from '~/types';
 
 interface UseCompaniesOptions {
   limit?: number;
@@ -10,6 +10,8 @@ export function useCompanies(options: UseCompaniesOptions = {}) {
 
   const route = useRoute();
   const router = useRouter();
+
+  const viewMode = ref<ViewMode>('grid');
 
   let debounceTimer: NodeJS.Timeout;
   const search = computed({
@@ -113,5 +115,6 @@ export function useCompanies(options: UseCompaniesOptions = {}) {
     error,
 
     generatePaginationLink,
+    viewMode,
   };
 }

@@ -25,7 +25,6 @@ const faqItems = computed<AccordionItem[]>(() => {
   }));
 });
 
-// Handle 404
 watch(error, (newError) => {
   if (newError?.statusCode === 404) {
     throw createError({
@@ -135,15 +134,7 @@ const { breadcrumbs } = useBreadcrumbs(
               </p>
             </div>
 
-            <div v-else>
-              <UPageGrid>
-                <CompanyCard
-                  v-for="company in companies"
-                  :key="company.id"
-                  :company="company"
-                />
-              </UPageGrid>
-            </div>
+            <CompanyCollection v-else :companies="companies" />
           </div>
 
           <div v-if="faqs && faqs.length > 0" class="space-y-6">
