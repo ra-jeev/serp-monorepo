@@ -4,19 +4,19 @@ import type { CompanyDetailResponse } from '@serp/api/companies';
 const route = useRoute();
 const slug = route.params.slug as string;
 
-const { data: company, pending } = useCompanyDetails(slug);
+const company = await useCompanyDetails(slug);
 
 const companyLinks = computed(() => {
-  if (!company.value || !company.value.serplyLink) {
+  if (!company.serplyLink) {
     return [];
   }
 
   return [
     {
-      label: company.value.domain || 'Visit Website',
+      label: company.domain || 'Visit Website',
       icon: 'i-lucide-external-link',
       trailing: true,
-      to: company.value.serplyLink,
+      to: company.serplyLink,
       target: '_blank',
     },
   ];
@@ -61,22 +61,17 @@ const navLinksMap: Partial<Record<keyof CompanyDetailResponse, TocLink>> = {
 const contentRef = useTemplateRef('contentRef');
 const addContentLinks = false;
 const tocLinks = computed(() => {
-  if (!company.value) {
-    return [];
-  }
-
-  const data = company.value;
   const links: TocLink[] = [];
   for (const key of Object.keys(navLinksMap)) {
     const _key = key as keyof CompanyDetailResponse;
-    const value = data[_key];
+    const value = company[_key];
 
     const addLink = Array.isArray(value) ? value.length > 0 : Boolean(value);
     if (addLink) {
       const link = navLinksMap[_key];
       if (link) {
         if (_key === 'hydratedAlternatives') {
-          link.targetLabel = `${company.value?.name} Alternatives`;
+          link.targetLabel = `${company.name} Alternatives`;
         }
 
         links.push(link);
@@ -125,19 +120,19 @@ onUnmounted(() => {
 });
 
 useSeoMeta({
-  title: () => company.value?.name || 'Company',
-  description: () => company.value?.oneLiner,
+  title: () => company.name,
+  description: () => company.oneLiner || company.excerpt,
 });
 
 const { breadcrumbs } = useBreadcrumbs(
   computed(() => ({
-    companyName: company.value?.name,
+    companyName: company.name,
   })),
 );
 </script>
 
 <template>
-  <UContainer v-if="!pending && company">
+  <UContainer>
     <UPage>
       <UPageHeader :links="companyLinks">
         <template #headline>
