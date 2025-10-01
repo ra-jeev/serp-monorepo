@@ -46,10 +46,6 @@ const {
   limit: 24,
   entityType: 'company',
 });
-
-function handleViewAllCategories() {
-  navigateTo('/products/best');
-}
 </script>
 
 <template>
@@ -131,12 +127,22 @@ function handleViewAllCategories() {
         title="Browse by Category"
         description="Explore companies by category to find exactly what you need"
       >
-        <CategoryList
+        <CategoryGridView
           :categories="categories"
           :limit="categoriesLimit"
           :pending="categoriesPending"
-          @view-all="handleViewAllCategories"
         />
+
+        <div v-if="categories.length > 0" class="text-center">
+          <UButton
+            color="neutral"
+            trailing-icon="i-lucide-arrow-right"
+            variant="subtle"
+            to="/products/best"
+          >
+            View All Categories
+          </UButton>
+        </div>
       </UPageSection>
     </UPageBody>
   </UPage>

@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import type { Category } from '~/types';
 
-defineProps<{
+const { limit = 12, pending = false } = defineProps<{
   categories: Category[];
+  pending?: boolean;
+  limit?: number;
 }>();
 </script>
 
@@ -17,5 +19,14 @@ defineProps<{
     >
       <CategoryCard :category="category" />
     </NuxtLink>
+
+    <template v-if="pending">
+      <UCard v-for="i in limit" :key="i">
+        <div class="flex items-center gap-4">
+          <USkeleton class="size-8 rounded-md" />
+          <USkeleton class="h-6 flex-1" />
+        </div>
+      </UCard>
+    </template>
   </div>
 </template>

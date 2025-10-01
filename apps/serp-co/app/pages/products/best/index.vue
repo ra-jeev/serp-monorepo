@@ -32,14 +32,24 @@ const { breadcrumbs } = useBreadcrumbs();
           {{ total === 1 ? 'category found' : 'categories found' }}
         </p>
 
-        <CategoryList
+        <CategoryGridView
           :categories="categories"
           :pending="pending"
-          :show-all="true"
-          :has-more="hasMore"
           :limit="limit"
-          @load-more="loadMore"
         />
+
+        <div v-if="categories.length && hasMore" class="text-center">
+          <UButton
+            color="neutral"
+            variant="subtle"
+            trailing-icon="i-lucide-chevrons-down"
+            :disabled="pending"
+            :loading="pending"
+            @click="loadMore"
+          >
+            {{ pending ? 'Loading...' : 'View More Categories' }}
+          </UButton>
+        </div>
 
         <div v-if="!pending && total === 0" class="text-center py-12">
           <UIcon

@@ -11,7 +11,7 @@ defineProps<{
     :ui="{ body: 'sm:p-4' }"
     class="group hover:shadow-lg transition-all duration-200"
   >
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-4">
       <div
         class="size-8 bg-default rounded-md flex items-center justify-center group-hover:bg-accented transition-colors"
       >
