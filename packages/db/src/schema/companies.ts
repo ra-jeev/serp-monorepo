@@ -19,8 +19,6 @@ export const companies = pgTable('companies', {
   content: text('content'),
   videoId: varchar('video_id', { length: 255 }),
   screenshots: jsonb('screenshots'),
-  alternatives: jsonb('alternatives'),
-  topics: jsonb('topics'),
   createdAt: timestamp('created_at', { withTimezone: true })
     .notNull()
     .defaultNow(),
