@@ -13,8 +13,7 @@
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
     "db:migrate": "drizzle-kit migrate",
-    "seed:categories": "tsx ./scripts/seedCategories.ts",
-    "seed:companies": "tsx ./scripts/seedCompanies.ts"
+    "db:seed": "tsx ./scripts/seedDb.ts"
   },
   "dependencies": {
     "dotenv": "^17.2.2",
