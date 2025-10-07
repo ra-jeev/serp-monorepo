@@ -3,6 +3,9 @@ import type { CompanyDetailResponse } from '~/types';
 export const useCompanyDetails = async (slug: string) => {
   const { data, error } = await useFetch<CompanyDetailResponse>(
     `/api/companies/${slug}`,
+    {
+      key: `company-detail-${slug}`,
+    },
   );
 
   if (error.value) {
