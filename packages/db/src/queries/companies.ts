@@ -3,8 +3,17 @@ import { z } from 'zod';
 import { getDb } from '../client';
 import { companies } from '../schema/companies';
 import { categories } from '../schema/categories';
-import { companyCategories } from '../schema/junction-tables';
-import { selectCategorySchema, selectCompanySchema } from '../validations';
+import { tags } from '../schema/tags';
+import {
+  companyCategories,
+  companyAlternatives,
+  companyTags,
+} from '../schema/junction-tables';
+import {
+  selectCategorySchema,
+  selectCompanySchema,
+  selectTagSchema,
+} from '../validations';
 
 export const companyCategoryResultSchema = selectCategorySchema.pick({
   id: true,
@@ -13,6 +22,13 @@ export const companyCategoryResultSchema = selectCategorySchema.pick({
   entityType: true,
 });
 export type CompanyCategoryResult = z.infer<typeof companyCategoryResultSchema>;
+
+export const companyTagResultSchema = selectTagSchema.pick({
+  id: true,
+  name: true,
+  slug: true,
+});
+export type CompanyTagResult = z.infer<typeof companyTagResultSchema>;
 
 export const companySortOptions = z.enum([
   'name-asc',
@@ -25,6 +41,7 @@ export type CompanySortOption = z.infer<typeof companySortOptions>;
 
 export const companyFiltersSchema = z.object({
   categorySlug: z.string().optional(),
+  tagSlug: z.string().optional(),
   nameQuery: z.string().optional(),
   sortBy: companySortOptions.default('name-asc'),
   limit: z.number().int().positive().default(50),
@@ -69,7 +86,7 @@ export async function findCompanies(
 ): Promise<CompanyQueryResult> {
   const db = getDb();
 
-  const { categorySlug, nameQuery, sortBy, limit, offset } =
+  const { categorySlug, tagSlug, nameQuery, sortBy, limit, offset } =
     companyFiltersSchema.parse(filters);
 
   let query = db.select(companySelectFields).from(companies).$dynamic();
@@ -93,17 +110,47 @@ export async function findCompanies(
       .where(eq(categories.slug, categorySlug));
   }
 
+  if (tagSlug) {
+    query = query
+      .innerJoin(companyTags, eq(companies.id, companyTags.companyId))
+      .innerJoin(tags, eq(companyTags.tagId, tags.id))
+      .where(eq(tags.slug, tagSlug));
+
+    countQuery = countQuery
+      .innerJoin(companyTags, eq(companies.id, companyTags.companyId))
+      .innerJoin(tags, eq(companyTags.tagId, tags.id))
+      .where(eq(tags.slug, tagSlug));
+  }
+
   if (nameQuery) {
     const sanitizedQuery = nameQuery.replace(/[%_]/g, '\\$&');
     const nameCondition = ilike(companies.name, `%${sanitizedQuery}%`);
 
-    if (categorySlug) {
+    if (categorySlug && tagSlug) {
+      query = query.where(
+        and(
+          eq(categories.slug, categorySlug),
+          eq(tags.slug, tagSlug),
+          nameCondition,
+        ),
+      );
+      countQuery = countQuery.where(
+        and(
+          eq(categories.slug, categorySlug),
+          eq(tags.slug, tagSlug),
+          nameCondition,
+        ),
+      );
+    } else if (categorySlug) {
       query = query.where(
         and(eq(categories.slug, categorySlug), nameCondition),
       );
       countQuery = countQuery.where(
         and(eq(categories.slug, categorySlug), nameCondition),
       );
+    } else if (tagSlug) {
+      query = query.where(and(eq(tags.slug, tagSlug), nameCondition));
+      countQuery = countQuery.where(and(eq(tags.slug, tagSlug), nameCondition));
     } else {
       query = query.where(nameCondition);
       countQuery = countQuery.where(nameCondition);
@@ -180,6 +227,39 @@ export async function findCompanyCategories(
     .orderBy(asc(categories.name));
 }
 
+export async function findCompanyTags(
+  companyId: number,
+): Promise<CompanyTagResult[]> {
+  const db = getDb();
+
+  return db
+    .select({
+      id: tags.id,
+      name: tags.name,
+      slug: tags.slug,
+    })
+    .from(tags)
+    .innerJoin(companyTags, eq(tags.id, companyTags.tagId))
+    .where(eq(companyTags.companyId, companyId))
+    .orderBy(asc(tags.name));
+}
+
+export async function findCompanyAlternatives(
+  companyId: number,
+): Promise<CompanyResult[]> {
+  const db = getDb();
+
+  return db
+    .select(companySelectFields)
+    .from(companies)
+    .innerJoin(
+      companyAlternatives,
+      eq(companies.id, companyAlternatives.alternativeId),
+    )
+    .where(eq(companyAlternatives.companyId, companyId))
+    .orderBy(asc(companies.name));
+}
+
 export async function findCompaniesByIds(
   ids: number[],
 ): Promise<CompanyResult[]> {
@@ -207,6 +287,23 @@ export async function findCompaniesByCategoryId(
     .from(companies)
     .innerJoin(companyCategories, eq(companies.id, companyCategories.companyId))
     .where(eq(companyCategories.categoryId, categoryId))
+    .orderBy(asc(companies.name))
+    .limit(limit);
+
+  return results;
+}
+
+export async function findCompaniesByTagId(
+  tagId: number,
+  limit: number = 10,
+): Promise<CompanyResult[]> {
+  const db = getDb();
+
+  const results = await db
+    .select(companySelectFields)
+    .from(companies)
+    .innerJoin(companyTags, eq(companies.id, companyTags.companyId))
+    .where(eq(companyTags.tagId, tagId))
     .orderBy(asc(companies.name))
     .limit(limit);
 
