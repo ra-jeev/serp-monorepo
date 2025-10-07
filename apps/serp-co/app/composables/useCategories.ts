@@ -32,21 +32,21 @@ export function useCategories(options: UseCategoriesOptions = {}) {
   watch(data, (newData) => {
     if (newData) {
       if (page.value === 1) {
-        allCategories.value = newData.categories;
+        allCategories.value = newData.data;
       } else {
-        allCategories.value.push(...newData.categories);
+        allCategories.value.push(...newData.data);
       }
     }
   });
 
   onMounted(() => {
     if (data.value) {
-      allCategories.value = data.value.categories;
+      allCategories.value = data.value.data;
     }
   });
 
   const loadMoreCategories = async () => {
-    if (!canLoadMore || !data.value || !data.value.hasMore) {
+    if (!canLoadMore || !data.value || !data.value.pagination.hasMore) {
       return;
     }
 
@@ -55,8 +55,8 @@ export function useCategories(options: UseCategoriesOptions = {}) {
 
   return {
     categories: computed(() => allCategories.value),
-    total: computed(() => data.value?.total ?? 0),
-    hasMore: computed(() => data.value?.hasMore ?? false),
+    total: computed(() => data.value?.pagination.total ?? 0),
+    hasMore: computed(() => data.value?.pagination.hasMore ?? false),
     limit: readonly(ref(limit)),
     pending,
     error,

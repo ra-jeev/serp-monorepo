@@ -102,9 +102,9 @@ export function useCompanies(options: UseCompaniesOptions = {}) {
   });
 
   return {
-    companies: computed(() => data.value?.companies ?? []),
-    total: computed(() => data.value?.total ?? 0),
-    totalPages: computed(() => data.value?.totalPages ?? 0),
+    companies: computed(() => data.value?.data ?? []),
+    total: computed(() => data.value?.pagination.total ?? 0),
+    totalPages: computed(() => data.value?.pagination.totalPages ?? 0),
     limit: readonly(ref(limit)),
 
     search,
