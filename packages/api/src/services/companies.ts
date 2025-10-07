@@ -3,50 +3,50 @@ import {
   findCompanies,
   findCompanyBySlug,
   findCompanyCategories,
-  findCompaniesByIds,
+  findCompanyTags,
+  findCompanyAlternatives,
   companySortOptions,
 } from '@serp/db/queries/companies';
 import type {
-  CompanyQueryResult,
   CompanyFilters,
   CompanyCategoryResult,
+  CompanyTagResult,
   CompanyResult,
 } from '@serp/db/queries/companies';
 import type { selectCompanySchema } from '@serp/db/validations';
+import type { PaginatedResponse } from '../types';
 
 export type { CompanyResult } from '@serp/db/queries/companies';
-
 export type { CompanySortOption } from '@serp/db/queries/companies';
 
 const companySearchApiParamsSchema = z.object({
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().positive().max(100).default(50),
   category: z.string().trim().min(1).optional(),
+  tag: z.string().trim().min(1).optional(),
   search: z.string().trim().min(1).max(100).optional(),
   sortBy: companySortOptions.optional(),
 });
 
-export type CompanyListResponse = CompanyQueryResult & {
-  page: number;
-  limit: number;
-  totalPages: number;
-};
+export type CompanyListResponse = PaginatedResponse<CompanyResult>;
 
 export type CompanyDetailResponse = z.infer<typeof selectCompanySchema> & {
   categories: CompanyCategoryResult[];
-  hydratedAlternatives: CompanyResult[];
+  tags: CompanyTagResult[];
+  alternatives: CompanyResult[];
 };
 
 export class CompanyService {
   async getCompanies(params: unknown): Promise<CompanyListResponse> {
     try {
       const validatedParams = companySearchApiParamsSchema.parse(params);
-      const { page, limit, category, search, sortBy } = validatedParams;
+      const { page, limit, category, tag, search, sortBy } = validatedParams;
 
       const offset = (page - 1) * limit;
 
       const filters: CompanyFilters = {
         categorySlug: category,
+        tagSlug: tag,
         nameQuery: search,
         sortBy,
         limit,
@@ -54,12 +54,17 @@ export class CompanyService {
       };
 
       const result = await findCompanies(filters);
+      const totalPages = Math.ceil(result.total / limit);
 
       return {
-        ...result,
-        page,
-        limit,
-        totalPages: Math.ceil(result.total / limit),
+        data: result.companies,
+        pagination: {
+          page,
+          limit,
+          total: result.total,
+          totalPages,
+          hasMore: result.hasMore,
+        },
       };
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -85,17 +90,17 @@ export class CompanyService {
         return null;
       }
 
-      const [categories, hydratedAlternatives] = await Promise.all([
+      const [categories, tags, alternatives] = await Promise.all([
         findCompanyCategories(company.id),
-        company.alternatives && company.alternatives.length > 0
-          ? findCompaniesByIds(company.alternatives)
-          : Promise.resolve([]),
+        findCompanyTags(company.id),
+        findCompanyAlternatives(company.id),
       ]);
 
       return {
         ...company,
         categories,
-        hydratedAlternatives,
+        tags,
+        alternatives,
       };
     } catch (error) {
       throw new Error(

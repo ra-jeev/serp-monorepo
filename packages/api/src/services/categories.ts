@@ -3,27 +3,27 @@ import {
   findCategoryBySlug,
   findCategories,
   categorySortOptions,
-  type CategoryQueryResult,
   type CategoryFilters,
+  type CategoryResult,
 } from '@serp/db/queries/categories';
 import {
   findCompaniesByCategoryId,
   type CompanyResult,
 } from '@serp/db/queries/companies';
+import { findPostsByCategoryId, type PostResult } from '@serp/db/queries/posts';
+import type { PaginatedResponse } from '../types';
 
 import type { selectCategorySchema } from '@serp/db/validations';
 
 export type { CategoryResult } from '@serp/db/queries/categories';
 
-export type CategoryListResponse = CategoryQueryResult & {
-  page: number;
-  limit: number;
-  totalPages: number;
-};
+export type CategoryListResponse = PaginatedResponse<CategoryResult>;
 
 export type CategoryDetailResponse = z.infer<typeof selectCategorySchema> & {
   companies: CompanyResult[];
+  posts: PostResult[];
   companyCount: number;
+  postCount: number;
 };
 
 const categoryListParamsSchema = z.object({
@@ -37,6 +37,9 @@ const categoryDetailParamsSchema = z.object({
   slug: z.string().trim().min(1).max(100),
   entityType: z.string().trim().min(1).default('company'),
   companyLimit: z.coerce.number().int().positive().max(50).default(20),
+  postLimit: z.coerce.number().int().positive().max(50).default(20),
+  includeCompanies: z.coerce.boolean().default(true),
+  includePosts: z.coerce.boolean().default(true),
 });
 
 export class CategoryService {
@@ -55,12 +58,17 @@ export class CategoryService {
       };
 
       const result = await findCategories(filters);
+      const totalPages = Math.ceil(result.total / limit);
 
       return {
-        ...result,
-        page,
-        limit,
-        totalPages: Math.ceil(result.total / limit),
+        data: result.categories,
+        pagination: {
+          page,
+          limit,
+          total: result.total,
+          totalPages,
+          hasMore: result.hasMore,
+        },
       };
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -77,8 +85,14 @@ export class CategoryService {
     params: unknown,
   ): Promise<CategoryDetailResponse | null> {
     try {
-      const { slug, entityType, companyLimit } =
-        categoryDetailParamsSchema.parse(params);
+      const {
+        slug,
+        entityType,
+        companyLimit,
+        postLimit,
+        includeCompanies,
+        includePosts,
+      } = categoryDetailParamsSchema.parse(params);
 
       const category = await findCategoryBySlug(entityType, slug);
 
@@ -86,15 +100,21 @@ export class CategoryService {
         return null;
       }
 
-      const companies = await findCompaniesByCategoryId(
-        category.id,
-        companyLimit,
-      );
+      const [companies, posts] = await Promise.all([
+        includeCompanies
+          ? findCompaniesByCategoryId(category.id, companyLimit)
+          : Promise.resolve([]),
+        includePosts
+          ? findPostsByCategoryId(category.id, postLimit)
+          : Promise.resolve([]),
+      ]);
 
       return {
         ...category,
         companies,
+        posts,
         companyCount: companies.length,
+        postCount: posts.length,
       };
     } catch (error) {
       if (error instanceof z.ZodError) {
