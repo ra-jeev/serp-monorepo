@@ -4,7 +4,9 @@
   "type": "module",
   "exports": {
     "./companies": "./src/services/companies.ts",
-    "./categories": "./src/services/categories.ts"
+    "./categories": "./src/services/categories.ts",
+    "./posts": "./src/services/posts.ts",
+    "./tags": "./src/services/tags.ts"
   },
   "scripts": {
     "lint": "eslint ."
