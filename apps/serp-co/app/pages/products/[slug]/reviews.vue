@@ -54,8 +54,9 @@ const findLinksInContent = (contentElement: HTMLElement) => {
 const navLinksMap: Partial<Record<keyof CompanyDetailResponse, TocLink>> = {
   excerpt: { targetId: 'overview', label: 'Overview' },
   categories: { targetId: 'categories', label: 'Categories' },
+  tags: { targetId: 'tags', label: 'Tags' },
   content: { targetId: 'details', label: 'Details' },
-  hydratedAlternatives: { targetId: 'alternatives', label: `Alternatives` },
+  alternatives: { targetId: 'alternatives', label: `Alternatives` },
 };
 
 const contentRef = useTemplateRef('contentRef');
@@ -70,7 +71,7 @@ const tocLinks = computed(() => {
     if (addLink) {
       const link = navLinksMap[_key];
       if (link) {
-        if (_key === 'hydratedAlternatives') {
+        if (_key === 'alternatives') {
           link.targetLabel = `${company.name} Alternatives`;
         }
 
@@ -213,11 +214,28 @@ const { breadcrumbs } = useBreadcrumbs(
         </CompanyDetailSection>
 
         <CompanyDetailSection
-          v-if="company.hydratedAlternatives?.length"
-          :id="navLinksMap.hydratedAlternatives?.targetId"
-          :title="getTitle('hydratedAlternatives')"
+          v-if="company.tags?.length"
+          :id="navLinksMap.tags?.targetId"
+          :title="getTitle('tags')"
         >
-          <CompanyCollection :companies="company.hydratedAlternatives" />
+          <div class="flex flex-wrap gap-2">
+            <UBadge
+              v-for="tag in company.tags"
+              :key="tag.id"
+              :label="tag.name"
+              size="lg"
+              variant="outline"
+              color="neutral"
+            />
+          </div>
+        </CompanyDetailSection>
+
+        <CompanyDetailSection
+          v-if="company.alternatives?.length"
+          :id="navLinksMap.alternatives?.targetId"
+          :title="getTitle('alternatives')"
+        >
+          <CompanyCollection :companies="company.alternatives" />
         </CompanyDetailSection>
       </UPageBody>
     </UPage>
