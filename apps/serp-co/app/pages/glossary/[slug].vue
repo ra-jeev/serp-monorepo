@@ -34,7 +34,7 @@ const { breadcrumbs } = useBreadcrumbs(
               <UIcon name="i-lucide-book-open" class="size-8 text-primary" />
             </div>
             <div>
-              <h1 class="text-3xl font-bold text-highlighted">
+              <h1>
                 {{ post.name }}
               </h1>
               <p v-if="post.excerpt" class="text-lg text-toned mt-1">
@@ -45,14 +45,12 @@ const { breadcrumbs } = useBreadcrumbs(
         </template>
       </UPageHeader>
 
-      <UPageBody class="space-y-8">
-        <UCard>
-          <div
-            v-if="post.content"
-            class="prose prose-gray dark:prose-invert max-w-none prose-headings:text-highlighted prose-p:text-muted prose-strong:text-highlighted prose-ul:text-muted prose-ol:text-muted prose-li:text-muted prose-a:text-primary-600 dark:prose-a:text-primary-400 prose-code:text-primary prose-code:bg-primary/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-gray-900 dark:prose-pre:bg-gray-800"
-            v-html="post.content"
-          />
-        </UCard>
+      <UPageBody>
+        <div
+          v-if="post.content"
+          class="prose prose-zinc dark:prose-invert max-w-none"
+          v-html="post.content"
+        />
 
         <div v-if="categories.length > 0" class="space-y-4">
           <h3 class="text-lg font-semibold text-highlighted">Categories</h3>

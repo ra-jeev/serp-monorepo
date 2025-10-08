@@ -65,7 +65,7 @@ const { breadcrumbs } = useBreadcrumbs(
           </h2>
           <UCard>
             <div
-              class="prose prose-gray dark:prose-invert max-w-none prose-headings:text-highlighted prose-p:text-muted prose-strong:text-highlighted prose-ul:text-muted prose-ol:text-muted prose-li:text-muted prose-a:text-primary-600 dark:prose-a:text-primary-400"
+              class="prose prose-zinc dark:prose-invert max-w-none"
               v-html="buyingGuide"
             />
           </UCard>

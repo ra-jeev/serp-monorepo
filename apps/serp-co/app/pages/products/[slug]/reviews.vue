@@ -208,7 +208,7 @@ const { breadcrumbs } = useBreadcrumbs(
         >
           <div
             ref="contentRef"
-            class="prose prose-primary dark:prose-invert max-w-none"
+            class="prose prose-zinc dark:prose-invert max-w-none"
             v-html="company.content"
           />
         </CompanyDetailSection>

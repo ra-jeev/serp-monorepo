@@ -29,54 +29,39 @@ const publishDate = computed(() => {
 <template>
   <UContainer>
     <UPage>
-      <UPageHeader>
+      <UPageHeader :title="post.name">
         <template #headline>
           <UBreadcrumb class="mb-6" :items="breadcrumbs" />
         </template>
 
-        <template #title>
-          <div class="space-y-4">
-            <div class="flex items-center gap-4">
-              <div
-                class="size-16 bg-primary-100 dark:bg-primary-900 rounded-xl flex items-center justify-center"
-              >
-                <UIcon name="i-lucide-file-text" class="size-8 text-primary" />
-              </div>
-              <div class="flex-1">
-                <h1 class="text-3xl font-bold text-highlighted">
-                  {{ post.name }}
-                </h1>
-                <div class="flex items-center gap-4 mt-2 text-muted">
-                  <span v-if="post.author">By {{ post.author }}</span>
-                  <span>{{ publishDate }}</span>
-                </div>
-              </div>
-            </div>
-            <p v-if="post.excerpt" class="text-lg text-toned">
-              {{ post.excerpt }}
-            </p>
-          </div>
+        <template #description>
+          <p v-if="post.excerpt">
+            {{ post.excerpt }}
+          </p>
+
+          <UUser
+            v-if="post.author"
+            class="mt-4"
+            :avatar="{ alt: post.author }"
+            :description="publishDate"
+            :name="post.author"
+          />
         </template>
       </UPageHeader>
 
-      <UPageBody class="space-y-8">
-        <div v-if="post.featuredImage" class="space-y-4">
-          <UCard>
-            <img
-              :src="post.featuredImage"
-              :alt="post.name"
-              class="w-full h-64 md:h-80 object-cover rounded-lg"
-            >
-          </UCard>
-        </div>
+      <UPageBody>
+        <img
+          v-if="post.featuredImage"
+          :src="post.featuredImage"
+          :alt="post.name"
+          class="w-full h-64 md:h-80 object-cover rounded-lg"
+        >
 
-        <UCard>
-          <div
-            v-if="post.content"
-            class="prose prose-gray dark:prose-invert max-w-none prose-headings:text-highlighted prose-p:text-muted prose-strong:text-highlighted prose-ul:text-muted prose-ol:text-muted prose-li:text-muted prose-a:text-primary-600 dark:prose-a:text-primary-400 prose-code:text-primary prose-code:bg-primary/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-gray-900 dark:prose-pre:bg-gray-800 prose-lg"
-            v-html="post.content"
-          />
-        </UCard>
+        <div
+          v-if="post.content"
+          class="prose prose-zinc dark:prose-invert max-w-none"
+          v-html="post.content"
+        />
 
         <div class="grid md:grid-cols-2 gap-6">
           <div v-if="categories.length > 0" class="space-y-4">
