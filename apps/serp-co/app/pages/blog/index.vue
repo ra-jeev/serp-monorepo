@@ -14,10 +14,9 @@ const blogPosts = computed(() =>
     to: `/blog/${post.slug}`,
     title: post.name,
     description: post.excerpt ?? undefined,
-    image: post.featuredImage ?? post.image ?? undefined,
+    image: post.featuredImage ?? post.image ?? '/images/blog-placeholder.svg',
     date: post.createdAt,
     authors: post.author ? [{ name: post.author }] : [],
-    badge: post.type === 'blog' ? undefined : { label: 'Featured' },
   })),
 );
 
