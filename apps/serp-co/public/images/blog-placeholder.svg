@@ -1,4 +1,6 @@
 <svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="450" fill="#64748b" opacity="0.1" />
+
   <g transform="translate(400, 225) scale(0.2) translate(-512, -512)">
     <path
       fill="#64748b" opacity="0.7"

@@ -24,6 +24,16 @@ const publishDate = computed(() => {
     day: 'numeric',
   });
 });
+
+const relatedArticles = computed(() =>
+  relatedPosts.map((post) => ({
+    to: `/blog/${post.slug}`,
+    title: post.name,
+    description: post.excerpt ?? undefined,
+    date: post.createdAt,
+    authors: post.author ? [{ name: post.author }] : [],
+  })),
+);
 </script>
 
 <template>
@@ -65,7 +75,7 @@ const publishDate = computed(() => {
 
         <div class="grid md:grid-cols-2 gap-6">
           <div v-if="categories.length > 0" class="space-y-4">
-            <h3 class="text-lg font-semibold text-highlighted">Categories</h3>
+            <h2 class="text-2xl font-bold text-highlighted">Categories</h2>
             <div class="flex flex-wrap gap-2">
               <NuxtLink
                 v-for="category in categories"
@@ -84,7 +94,7 @@ const publishDate = computed(() => {
           </div>
 
           <div v-if="tags.length > 0" class="space-y-4">
-            <h3 class="text-lg font-semibold text-highlighted">Tags</h3>
+            <h2 class="text-2xl font-bold text-highlighted">Tags</h2>
             <div class="flex flex-wrap gap-2">
               <UBadge
                 v-for="tag in tags"
@@ -98,34 +108,9 @@ const publishDate = computed(() => {
           </div>
         </div>
 
-        <div v-if="relatedPosts.length > 0" class="space-y-6">
-          <h3 class="text-lg font-semibold text-highlighted">
-            Related Articles
-          </h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <NuxtLink
-              v-for="relatedPost in relatedPosts"
-              :key="relatedPost.id"
-              :to="`/blog/${relatedPost.slug}`"
-              class="group"
-            >
-              <UCard class="h-full transition-all duration-200 hover:shadow-md">
-                <div class="space-y-3">
-                  <h4
-                    class="font-semibold text-highlighted group-hover:text-primary transition-colors"
-                  >
-                    {{ relatedPost.name }}
-                  </h4>
-                  <p
-                    v-if="relatedPost.excerpt"
-                    class="text-muted text-sm line-clamp-3"
-                  >
-                    {{ relatedPost.excerpt }}
-                  </p>
-                </div>
-              </UCard>
-            </NuxtLink>
-          </div>
+        <div v-if="relatedArticles.length > 0" class="space-y-6">
+          <h2 class="text-2xl font-bold text-highlighted">Related Articles</h2>
+          <UBlogPosts :posts="relatedArticles" />
         </div>
       </UPageBody>
     </UPage>
