@@ -26,7 +26,6 @@ export async function seed(shouldCloseDb: boolean = true) {
   }
 }
 
-console.log('import.meta.url: ', import.meta.url, process.argv[1]);
 if (import.meta.url === `file://${process.argv[1]}`) {
   seed().catch((err) => {
     console.error('💥 Tag seeding failed:', err);

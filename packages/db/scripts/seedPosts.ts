@@ -35,7 +35,7 @@ export async function seed(shouldCloseDb: boolean = true) {
 
   // Step 3: Get post slug -> ID mapping
   console.log('🔍 Building post slug to ID mapping...');
-  const postSlugs = postEntities.map((e: any) => e.slug);
+  const postSlugs = postEntities.map((e: any) => sanitizeSlug(e.slug));
   const dbPosts = await db
     .select({ id: posts.id, slug: posts.slug })
     .from(posts)
@@ -81,7 +81,7 @@ export async function seed(shouldCloseDb: boolean = true) {
   const postTags_data: { postId: number; tagId: number }[] = [];
 
   postEntities.forEach((entity: any) => {
-    const postId = slugToIdMap.get(entity.slug);
+    const postId = slugToIdMap.get(sanitizeSlug(entity.slug));
     if (!postId) {
       console.warn(`⚠️ Post not found for slug: ${entity.slug}`);
       return;
