@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { inArray } from 'drizzle-orm';
-import { closeDb, getData, getDb } from './utils';
+import { closeDb, getData, getDb, sanitizeSlug } from './utils';
 import { posts } from '../src/schema/posts';
 import { categories as categoriesTable } from '../src/schema/categories';
 import { tags as tagsTable } from '../src/schema/tags';
@@ -17,7 +17,7 @@ export async function seed(shouldCloseDb: boolean = true) {
   // Step 1: Prepare all post data for bulk insert
   console.log('📦 Preparing post data for bulk insert...');
   const postsData = postEntities.map((entity: any) => ({
-    slug: entity.slug,
+    slug: sanitizeSlug(entity.slug),
     name: entity.name,
     type: entity.data?.module?.toLowerCase() ?? 'glossary',
     image: entity.image,

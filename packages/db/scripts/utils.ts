@@ -34,3 +34,12 @@ export const closeDb = async () => {
     pool = undefined;
   }
 };
+
+export const sanitizeSlug = (slug: string): string => {
+  return slug
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+};
