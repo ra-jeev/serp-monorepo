@@ -53,7 +53,7 @@ const { breadcrumbs } = useBreadcrumbs(
         />
 
         <div v-if="categories.length > 0" class="space-y-4">
-          <h3 class="text-lg font-semibold text-highlighted">Categories</h3>
+          <h2 class="text-2xl font-bold text-highlighted">Categories</h2>
           <div class="flex flex-wrap gap-2">
             <NuxtLink
               v-for="category in categories"
@@ -72,7 +72,7 @@ const { breadcrumbs } = useBreadcrumbs(
         </div>
 
         <div v-if="tags.length > 0" class="space-y-4">
-          <h3 class="text-lg font-semibold text-highlighted">Tags</h3>
+          <h2 class="text-2xl font-bold text-highlighted">Tags</h2>
           <div class="flex flex-wrap gap-2">
             <UBadge
               v-for="tag in tags"
@@ -86,43 +86,21 @@ const { breadcrumbs } = useBreadcrumbs(
         </div>
 
         <div v-if="relatedPosts.length > 0" class="space-y-6">
-          <h3 class="text-lg font-semibold text-highlighted">Related Terms</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <NuxtLink
-              v-for="relatedPost in relatedPosts"
-              :key="relatedPost.id"
-              :to="`/glossary/${relatedPost.slug}`"
-              class="group"
-            >
-              <UCard class="transition-all duration-200 hover:shadow-md">
-                <div class="flex items-center justify-between">
-                  <div>
-                    <h4
-                      class="font-semibold text-highlighted group-hover:text-primary transition-colors"
-                    >
-                      {{ relatedPost.name }}
-                    </h4>
-                    <p
-                      v-if="relatedPost.excerpt"
-                      class="text-muted text-sm mt-1 line-clamp-2"
-                    >
-                      {{ relatedPost.excerpt }}
-                    </p>
-                  </div>
-                  <UIcon
-                    name="i-lucide-arrow-right"
-                    class="size-4 text-muted group-hover:text-primary transition-colors ml-4 flex-shrink-0"
-                  />
-                </div>
-              </UCard>
-            </NuxtLink>
-          </div>
+          <h2 class="text-2xl font-bold text-highlighted">Related Terms</h2>
+          <NuxtLink
+            v-for="relatedPost in relatedPosts"
+            :key="relatedPost.id"
+            :to="`/glossary/${relatedPost.slug}`"
+          >
+            <GlossaryCard
+              :title="relatedPost.name"
+              :description="relatedPost.excerpt"
+            />
+          </NuxtLink>
         </div>
 
         <div v-if="post.videoId" class="space-y-6">
-          <h3 class="text-lg font-semibold text-highlighted">
-            Video Explanation
-          </h3>
+          <h2 class="text-2xl font-bold text-highlighted">Video Explanation</h2>
           <UCard>
             <div class="aspect-video">
               <iframe

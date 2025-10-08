@@ -72,29 +72,8 @@ const { breadcrumbs } = useBreadcrumbs();
                 v-for="post in groupedPosts[letter]"
                 :key="post.id"
                 :to="`/glossary/${post.slug}`"
-                class="group"
               >
-                <UCard class="transition-all duration-200 hover:shadow-md">
-                  <div class="flex items-start justify-between">
-                    <div class="flex-1">
-                      <h3
-                        class="font-semibold text-highlighted group-hover:text-primary transition-colors text-lg"
-                      >
-                        {{ post.name }}
-                      </h3>
-                      <p
-                        v-if="post.excerpt"
-                        class="text-muted mt-2 line-clamp-2"
-                      >
-                        {{ post.excerpt }}
-                      </p>
-                    </div>
-                    <UIcon
-                      name="i-lucide-arrow-right"
-                      class="size-5 text-muted group-hover:text-primary transition-colors ml-4 flex-shrink-0"
-                    />
-                  </div>
-                </UCard>
+                <GlossaryCard :title="post.name" :description="post.excerpt" />
               </NuxtLink>
             </div>
           </div>
