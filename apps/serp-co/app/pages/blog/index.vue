@@ -11,7 +11,7 @@ const {
 
 const blogPosts = computed(() =>
   posts.value.map((post) => ({
-    to: `/blog/${post.slug}`,
+    to: `/posts/${post.slug}`,
     title: post.name,
     description: post.excerpt ?? undefined,
     image: post.featuredImage ?? post.image ?? '/images/blog-placeholder.svg',

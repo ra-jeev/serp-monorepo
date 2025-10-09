@@ -71,7 +71,7 @@ const { breadcrumbs } = useBreadcrumbs();
               <NuxtLink
                 v-for="post in groupedPosts[letter]"
                 :key="post.id"
-                :to="`/glossary/${post.slug}`"
+                :to="`/posts/${post.slug}`"
               >
                 <GlossaryCard :title="post.name" :description="post.excerpt" />
               </NuxtLink>
