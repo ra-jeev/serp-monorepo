@@ -68,10 +68,10 @@ export async function findTags(
       query = query.orderBy(desc(tags.name));
       break;
     case 'recent':
-      query = query.orderBy(desc(tags.createdAt));
+      query = query.orderBy(desc(tags.createdAt), desc(tags.id));
       break;
     case 'updated':
-      query = query.orderBy(desc(tags.updatedAt));
+      query = query.orderBy(desc(tags.updatedAt), desc(tags.id));
       break;
     case 'name-asc':
     default:

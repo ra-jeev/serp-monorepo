@@ -66,16 +66,15 @@ export async function findCategories(
       countQuery = countQuery.where(entityTypeCondition);
     }
 
-    // Apply sorting
     switch (sortBy) {
       case 'name-desc':
         query = query.orderBy(desc(categories.name));
         break;
       case 'recent':
-        query = query.orderBy(desc(categories.createdAt));
+        query = query.orderBy(desc(categories.createdAt), desc(categories.id));
         break;
       case 'updated':
-        query = query.orderBy(desc(categories.updatedAt));
+        query = query.orderBy(desc(categories.updatedAt), desc(categories.id));
         break;
       case 'name-asc':
       default:

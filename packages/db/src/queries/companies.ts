@@ -162,10 +162,10 @@ export async function findCompanies(
       query = query.orderBy(desc(companies.name));
       break;
     case 'recent':
-      query = query.orderBy(desc(companies.createdAt));
+      query = query.orderBy(desc(companies.createdAt), desc(companies.id));
       break;
     case 'updated':
-      query = query.orderBy(desc(companies.updatedAt));
+      query = query.orderBy(desc(companies.updatedAt), desc(companies.id));
       break;
     case 'name-asc':
     default:

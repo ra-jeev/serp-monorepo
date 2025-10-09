@@ -151,11 +151,11 @@ export async function findPosts(
       query = query.orderBy(asc(posts.name));
       break;
     case 'updated':
-      query = query.orderBy(desc(posts.updatedAt));
+      query = query.orderBy(desc(posts.updatedAt), desc(posts.id));
       break;
     case 'recent':
     default:
-      query = query.orderBy(desc(posts.createdAt));
+      query = query.orderBy(desc(posts.createdAt), desc(posts.id));
       break;
   }
 
