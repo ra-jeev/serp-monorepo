@@ -4,10 +4,16 @@ interface UsePostsOptions {
   limit?: number;
   defaultSort?: PostSortOption;
   type?: PostType;
+  includeCategories?: boolean;
 }
 
 export function usePosts(options: UsePostsOptions = {}) {
-  const { limit = 24, defaultSort = 'recent', type } = options;
+  const {
+    limit = 24,
+    defaultSort = 'recent',
+    type,
+    includeCategories = false,
+  } = options;
 
   const route = useRoute();
   const router = useRouter();
@@ -87,6 +93,7 @@ export function usePosts(options: UsePostsOptions = {}) {
     sortBy: route.query.sortBy || defaultSort,
     page: route.query.page || undefined,
     limit,
+    includeCategories,
   }));
 
   const { data, pending, error } = useAsyncData<PostListResponse>(

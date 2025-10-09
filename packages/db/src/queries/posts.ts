@@ -53,18 +53,22 @@ export const postFiltersSchema = z.object({
 });
 export type PostFilters = z.input<typeof postFiltersSchema>;
 
-export const postResultSchema = selectPostSchema.pick({
-  id: true,
-  slug: true,
-  name: true,
-  type: true,
-  image: true,
-  author: true,
-  excerpt: true,
-  featuredImage: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const postResultSchema = selectPostSchema
+  .pick({
+    id: true,
+    slug: true,
+    name: true,
+    type: true,
+    image: true,
+    author: true,
+    excerpt: true,
+    featuredImage: true,
+    createdAt: true,
+    updatedAt: true,
+  })
+  .extend({
+    categories: z.array(postCategoryResultSchema).optional(),
+  });
 
 export type PostResult = z.infer<typeof postResultSchema>;
 
@@ -173,6 +177,57 @@ export async function findPosts(
     posts: postsResult,
     total,
     hasMore,
+  };
+}
+
+export async function findPostsWithCategories(
+  filters: PostFilters = {},
+): Promise<PostQueryResult> {
+  const db = getDb();
+
+  const postsResult = await findPosts(filters);
+
+  if (postsResult.posts.length === 0) {
+    return {
+      posts: [],
+      total: postsResult.total,
+      hasMore: postsResult.hasMore,
+    };
+  }
+
+  const postIds = postsResult.posts.map((p) => p.id);
+
+  const postCategoriesData = await db
+    .select({
+      postId: postCategories.postId,
+      category: {
+        id: categories.id,
+        name: categories.name,
+        slug: categories.slug,
+        entityType: categories.entityType,
+      },
+    })
+    .from(postCategories)
+    .innerJoin(categories, eq(postCategories.categoryId, categories.id))
+    .where(inArray(postCategories.postId, postIds));
+
+  const categoriesByPostId = new Map<number, PostCategoryResult[]>();
+  postCategoriesData.forEach(({ postId, category }) => {
+    if (!categoriesByPostId.has(postId)) {
+      categoriesByPostId.set(postId, []);
+    }
+    categoriesByPostId.get(postId)!.push(category);
+  });
+
+  const postsWithCategories = postsResult.posts.map((post) => ({
+    ...post,
+    categories: categoriesByPostId.get(post.id) || [],
+  }));
+
+  return {
+    posts: postsWithCategories,
+    total: postsResult.total,
+    hasMore: postsResult.hasMore,
   };
 }
 

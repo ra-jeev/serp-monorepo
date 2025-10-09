@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import {
   findPosts,
+  findPostsWithCategories,
   findPostBySlug,
   findPostCategories,
   findPostTags,
@@ -37,14 +38,23 @@ const postListParamsSchema = z.object({
   tag: z.string().trim().min(1).optional(),
   search: z.string().trim().min(1).max(100).optional(),
   sortBy: postSortOptions.default('recent'),
+  includeCategories: z.coerce.boolean().default(false),
 });
 
 export class PostService {
   async getPosts(params: unknown): Promise<PostListResponse> {
     try {
       const validatedParams = postListParamsSchema.parse(params);
-      const { page, limit, type, category, tag, search, sortBy } =
-        validatedParams;
+      const {
+        page,
+        limit,
+        type,
+        category,
+        tag,
+        search,
+        sortBy,
+        includeCategories,
+      } = validatedParams;
 
       const offset = (page - 1) * limit;
 
@@ -58,7 +68,10 @@ export class PostService {
         offset,
       };
 
-      const result = await findPosts(filters);
+      const result = includeCategories
+        ? await findPostsWithCategories(filters)
+        : await findPosts(filters);
+
       const totalPages = Math.ceil(result.total / limit);
 
       return {
