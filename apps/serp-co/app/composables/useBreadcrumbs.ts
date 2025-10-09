@@ -63,6 +63,17 @@ export function useBreadcrumbs(
         const termLabel = contextValue?.postName || 'Term';
         items.push({ label: termLabel, icon: 'i-lucide-book-open' });
       }
+    } else if (pathSegments[0] === 'posts') {
+      items.push({
+        label: 'Posts',
+        to: '/posts',
+        icon: 'i-lucide-file-text',
+      });
+
+      if (pathSegments[1] && pathSegments[1] !== 'category') {
+        const postLabel = contextValue?.postName || 'Post';
+        items.push({ label: postLabel, icon: 'i-lucide-file-text' });
+      }
     }
 
     return items;
