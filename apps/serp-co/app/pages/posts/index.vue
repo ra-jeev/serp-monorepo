@@ -56,38 +56,53 @@ const getPublishDate = (date: Date | undefined) => {
             <UCard
               class="group h-full transition-all duration-200 hover:shadow-md overflow-hidden"
             >
-              <h3
-                class="font-semibold text-highlighted group-hover:underline line-clamp-2"
-              >
-                {{ post.name }}
-              </h3>
-              <p
-                v-if="post.excerpt"
-                class="text-muted text-sm line-clamp-2 mt-1"
-              >
-                {{ post.excerpt }}
-              </p>
-              <UUser
-                v-if="post.author"
-                class="mt-3"
-                :avatar="{ alt: post.author }"
-                :description="getPublishDate(post.createdAt)"
-                :name="post.author"
-              />
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <UBadge
+                    :label="post.type === 'blog' ? 'Blog' : 'Glossary'"
+                    class="mb-2"
+                    color="neutral"
+                    variant="subtle"
+                    size="sm"
+                  />
+                  <h3
+                    class="font-semibold text-highlighted group-hover:underline line-clamp-2"
+                  >
+                    {{ post.name }}
+                  </h3>
+                  <p
+                    v-if="post.excerpt"
+                    class="text-muted text-sm line-clamp-2 mt-1"
+                  >
+                    {{ post.excerpt }}
+                  </p>
+                  <UUser
+                    v-if="post.author"
+                    class="mt-3"
+                    :avatar="{ alt: post.author }"
+                    :description="getPublishDate(post.createdAt)"
+                    :name="post.author"
+                  />
 
-              <div
-                v-if="post.categories?.length"
-                class="flex flex-wrap gap-2 mt-4"
-              >
-                <NuxtLink
-                  v-for="category in post.categories"
-                  :key="category.id"
-                  :to="`/posts/category/${category.slug}`"
-                >
-                  <UBadge variant="subtle">
-                    {{ category.name }}
-                  </UBadge>
-                </NuxtLink>
+                  <div
+                    v-if="post.categories?.length"
+                    class="flex flex-wrap gap-2 mt-4"
+                  >
+                    <NuxtLink
+                      v-for="category in post.categories"
+                      :key="category.id"
+                      :to="`/posts/category/${category.slug}`"
+                    >
+                      <UBadge variant="subtle">
+                        {{ category.name }}
+                      </UBadge>
+                    </NuxtLink>
+                  </div>
+                </div>
+                <UIcon
+                  name="i-lucide-arrow-right"
+                  class="size-5 text-muted group-hover:text-primary transition-colors ml-4 flex-shrink-0"
+                />
               </div>
             </UCard>
           </NuxtLink>
