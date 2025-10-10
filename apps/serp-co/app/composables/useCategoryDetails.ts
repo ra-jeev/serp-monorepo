@@ -1,14 +1,26 @@
 import type { CategoryDetailResponse } from '~/types';
 
+interface UseCategoryDetailsOptions {
+  entityType?: string;
+  includeCompanies?: boolean;
+  includePosts?: boolean;
+}
+
 export async function useCategoryDetails(
   slug: string,
-  entityType: string = 'company',
+  options: UseCategoryDetailsOptions = {},
 ) {
+  const {
+    entityType = 'company',
+    includePosts = true,
+    includeCompanies = true,
+  } = options;
+
   const { data, error } = await useFetch<CategoryDetailResponse>(
     `/api/categories/${slug}`,
     {
       key: `category-detail-${entityType}-${slug}`,
-      params: { entityType },
+      params: { entityType, includeCompanies, includePosts },
     },
   );
 
@@ -39,7 +51,9 @@ export async function useCategoryDetails(
   return {
     category,
     companies: category.companies,
+    posts: category.posts || [],
     companyCount: category.companyCount,
+    postCount: category.postCount || 0,
     buyingGuide: category.buyingGuide,
     faqs: category.faqs,
   };
