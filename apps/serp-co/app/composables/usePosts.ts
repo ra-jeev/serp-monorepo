@@ -4,6 +4,7 @@ interface UsePostsOptions {
   limit?: number;
   defaultSort?: PostSortOption;
   type?: PostType;
+  categorySlug?: string;
   includeCategories?: boolean;
 }
 
@@ -12,6 +13,7 @@ export function usePosts(options: UsePostsOptions = {}) {
     limit = 24,
     defaultSort = 'recent',
     type,
+    categorySlug,
     includeCategories = false,
   } = options;
 
@@ -88,7 +90,7 @@ export function usePosts(options: UsePostsOptions = {}) {
 
   const queryParams = computed(() => ({
     search: route.query.search || undefined,
-    category: route.query.category || undefined,
+    category: categorySlug || category.value || undefined,
     type: postType.value || undefined,
     sortBy: route.query.sortBy || defaultSort,
     page: route.query.page || undefined,
@@ -97,7 +99,7 @@ export function usePosts(options: UsePostsOptions = {}) {
   }));
 
   const { data, pending, error } = useAsyncData<PostListResponse>(
-    `posts-${limit}-${type || 'all'}`,
+    `posts-${limit}-${type || 'all'}${categorySlug ? '-' + categorySlug : ''}`,
     () => $fetch('/api/posts', { params: queryParams.value }),
     {
       watch: [queryParams],
