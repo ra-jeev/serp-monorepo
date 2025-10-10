@@ -70,7 +70,18 @@ export function useBreadcrumbs(
         icon: 'i-lucide-file-text',
       });
 
-      if (pathSegments[1] && pathSegments[1] !== 'category') {
+      if (pathSegments[1] === 'category') {
+        items.push({
+          label: 'Categories',
+          to: '/posts/category',
+          icon: 'i-lucide-folder',
+        });
+
+        if (pathSegments[2]) {
+          const categoryLabel = contextValue?.categoryName || 'Category';
+          items.push({ label: categoryLabel, icon: 'i-lucide-tag' });
+        }
+      } else if (pathSegments[1] && pathSegments[1] !== 'category') {
         const postLabel = contextValue?.postName || 'Post';
         items.push({ label: postLabel, icon: 'i-lucide-file-text' });
       }
