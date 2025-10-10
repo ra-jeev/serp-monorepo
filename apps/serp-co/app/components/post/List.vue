@@ -31,18 +31,24 @@ const getPublishDate = (date: Date | undefined) => {
       <UCard class="transition-all duration-200 hover:shadow-md">
         <div class="flex items-start justify-between">
           <div class="flex-1">
-            <UBadge
-              :label="post.type === 'blog' ? 'Blog' : 'Glossary'"
-              class="mb-2"
-              color="neutral"
-              variant="subtle"
-              size="sm"
-            />
-            <h3
-              class="font-semibold text-highlighted group-hover:text-primary transition-colors line-clamp-2"
-            >
-              {{ post.name }}
-            </h3>
+            <div class="flex items-start gap-2.5">
+              <UIcon
+                :name="
+                  post.type === 'blog'
+                    ? 'i-lucide-file-text'
+                    : 'i-lucide-book-open'
+                "
+                :class="
+                  post.type === 'blog' ? 'text-blue-500' : 'text-green-500'
+                "
+                class="size-4 mt-1 flex-shrink-0"
+              />
+              <h3
+                class="font-semibold text-highlighted group-hover:text-primary transition-colors line-clamp-2"
+              >
+                {{ post.name }}
+              </h3>
+            </div>
             <p v-if="post.excerpt" class="text-muted text-sm mt-1 line-clamp-2">
               {{ post.excerpt }}
             </p>
@@ -83,7 +89,6 @@ const getPublishDate = (date: Date | undefined) => {
     <UCard v-for="i in limit" :key="i">
       <div class="flex items-start justify-between">
         <div class="flex-1">
-          <USkeleton class="h-5 w-16 mb-2" />
           <USkeleton class="h-6 w-full mb-2" />
           <USkeleton class="h-4 w-4/5 mb-3" />
           <div class="flex items-center gap-2">
