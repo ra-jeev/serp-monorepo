@@ -30,15 +30,6 @@ const { breadcrumbs } = useBreadcrumbs(
     categoryName: category.name,
   })),
 );
-
-const getPublishDate = (date: Date | undefined) => {
-  if (!date) return '';
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-};
 </script>
 
 <template>
@@ -60,17 +51,19 @@ const getPublishDate = (date: Date | undefined) => {
               <h1 class="text-3xl font-bold text-highlighted">
                 {{ category.name }}
               </h1>
-              <p class="text-lg text-toned mt-1">
-                {{ total }}
-                {{ total === 1 ? 'post' : 'posts' }}
-              </p>
+              <PostStats
+                :total="total"
+                singular="post"
+                plural="posts"
+                variant="default"
+                class="text-lg text-toned mt-1"
+              />
             </div>
           </div>
         </template>
       </UPageHeader>
 
       <UPageBody>
-        <!-- Buying Guide (if available) -->
         <div v-if="buyingGuide" class="space-y-6">
           <h2 class="text-2xl font-bold text-highlighted">
             {{ category.name }} Guide
@@ -83,7 +76,6 @@ const getPublishDate = (date: Date | undefined) => {
           </UCard>
         </div>
 
-        <!-- Posts Section -->
         <div class="space-y-6">
           <h2 class="text-2xl font-bold text-highlighted">
             Posts in {{ category.name }}
@@ -103,74 +95,20 @@ const getPublishDate = (date: Date | undefined) => {
             </p>
           </div>
 
-          <!-- Posts List -->
-          <div
-            v-else-if="!pending && paginatedPosts.length > 0"
-            class="grid grid-cols-1 gap-4"
-          >
-            <NuxtLink
-              v-for="post in paginatedPosts"
-              :key="post.id"
-              :to="`/posts/${post.slug}`"
-              class="group"
-            >
-              <UCard class="transition-all duration-200 hover:shadow-md">
-                <div class="flex items-start justify-between">
-                  <div class="flex-1">
-                    <UBadge
-                      :label="post.type === 'blog' ? 'Blog' : 'Glossary'"
-                      class="mb-2"
-                      color="neutral"
-                      variant="subtle"
-                      size="sm"
-                    />
-                    <h3
-                      class="font-semibold text-highlighted group-hover:text-primary transition-colors line-clamp-2"
-                    >
-                      {{ post.name }}
-                    </h3>
-                    <p
-                      v-if="post.excerpt"
-                      class="text-muted text-sm mt-1 line-clamp-2"
-                    >
-                      {{ post.excerpt }}
-                    </p>
-                    <UUser
-                      v-if="post.author"
-                      class="mt-3"
-                      :avatar="{ alt: post.author }"
-                      :description="getPublishDate(post.createdAt)"
-                      :name="post.author"
-                    />
-                  </div>
-                  <UIcon
-                    name="i-lucide-arrow-right"
-                    class="size-5 text-muted group-hover:text-primary transition-colors ml-4 flex-shrink-0"
-                  />
-                </div>
-              </UCard>
-            </NuxtLink>
-          </div>
+          <PostList
+            :posts="paginatedPosts"
+            :pending="pending"
+            :limit="limit"
+            :show-categories="false"
+          />
 
-          <!-- Loading State -->
-          <div v-if="pending" class="grid grid-cols-1 gap-4">
-            <UCard v-for="i in limit" :key="i">
-              <div class="flex items-start justify-between">
-                <div class="flex-1">
-                  <USkeleton class="h-5 w-16 mb-2" />
-                  <USkeleton class="h-6 w-full mb-2" />
-                  <USkeleton class="h-4 w-4/5 mb-3" />
-                  <div class="flex items-center gap-2">
-                    <USkeleton class="size-6 rounded-full" />
-                    <USkeleton class="h-4 w-24" />
-                  </div>
-                </div>
-                <USkeleton class="size-5 ml-4" />
-              </div>
-            </UCard>
-          </div>
+          <PostEmptyState
+            v-if="!pending && total === 0"
+            icon="i-lucide-file-text"
+            title="No posts yet"
+            description="No posts have been added to this category yet."
+          />
 
-          <!-- Pagination -->
           <div v-if="!pending && totalPages > 1" class="flex justify-center">
             <UPagination
               v-model:page="page"
@@ -182,7 +120,6 @@ const getPublishDate = (date: Date | undefined) => {
           </div>
         </div>
 
-        <!-- FAQs (if available) -->
         <div v-if="faqs && faqs.length > 0" class="space-y-6">
           <h2 class="text-2xl font-bold text-highlighted">
             Frequently Asked Questions
