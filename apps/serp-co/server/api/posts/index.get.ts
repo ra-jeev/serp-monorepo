@@ -1,12 +1,26 @@
 import { PostService } from '@serp/api/posts';
 
 export default defineCachedEventHandler(async (event) => {
-  const query = getQuery(event);
+  try {
+    const query = getQuery(event);
+    const postService = new PostService();
+    return await postService.getPosts(query);
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : 'Unknown error occurred';
 
-  const postService = new PostService();
-  const postsResponse = await postService.getPosts(query);
+    if (message.includes('Invalid parameters')) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: message,
+      });
+    }
 
-  return postsResponse;
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Internal server error',
+    });
+  }
 }, {
   maxAge: 60 * 15, // 15 minutes
   swr: true,

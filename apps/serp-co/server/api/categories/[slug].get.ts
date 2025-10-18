@@ -27,11 +27,6 @@ export default defineCachedEventHandler(async (event) => {
 
     return category;
   } catch (error) {
-    // If it's already a Nuxt error, re-throw it
-    if (error && typeof error === 'object' && 'statusCode' in error) {
-      throw error;
-    }
-
     const message =
       error instanceof Error ? error.message : 'Unknown error occurred';
 

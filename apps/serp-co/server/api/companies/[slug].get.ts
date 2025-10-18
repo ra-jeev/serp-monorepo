@@ -1,26 +1,43 @@
 import { CompanyService } from '@serp/api/companies';
 
 export default defineCachedEventHandler(async (event) => {
-  const slug = getRouterParam(event, 'slug');
+  try {
+    const slug = getRouterParam(event, 'slug');
 
-  if (!slug) {
+    if (!slug) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Company slug is required',
+      });
+    }
+
+    const companyService = new CompanyService();
+    const company = await companyService.getCompanyBySlug(slug);
+
+    if (!company) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'Company not found',
+      });
+    }
+
+    return company;
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : 'Unknown error occurred';
+
+    if (message.includes('Invalid parameters')) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: message,
+      });
+    }
+
     throw createError({
-      statusCode: 400,
-      statusMessage: 'Company slug is required',
+      statusCode: 500,
+      statusMessage: 'Internal server error',
     });
   }
-
-  const companyService = new CompanyService();
-  const company = await companyService.getCompanyBySlug(slug);
-
-  if (!company) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: 'Company not found',
-    });
-  }
-
-  return company;
 }, {
   maxAge: 60 * 60, // 1 hour
   swr: true,
