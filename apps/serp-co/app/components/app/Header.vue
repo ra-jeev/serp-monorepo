@@ -1,19 +1,7 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui';
 
-const route = useRoute();
-const items = computed<NavigationMenuItem[]>(() => [
-  {
-    label: 'Blog',
-    to: '/blog',
-    active: route.path.startsWith('/blog'),
-  },
-  {
-    label: 'Glossary',
-    to: '/glossary',
-    active: route.path.startsWith('/glossary'),
-  },
-]);
+const headerItems: NavigationMenuItem[] = useAppConfig().site.headerNavItems;
 </script>
 
 <template>
@@ -22,7 +10,7 @@ const items = computed<NavigationMenuItem[]>(() => [
       <Logo class="h-12 w-auto" />
     </template>
 
-    <UNavigationMenu :items="items" />
+    <UNavigationMenu :items="headerItems" />
 
     <template #right>
       <UColorModeButton />
