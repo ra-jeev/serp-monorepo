@@ -1,6 +1,6 @@
 import { CategoryService } from '@serp/api/categories';
 
-export default defineEventHandler(async (event) => {
+export default defineCachedEventHandler(async (event) => {
   try {
     const slug = getRouterParam(event, 'slug');
     const query = getQuery(event);
@@ -50,4 +50,12 @@ export default defineEventHandler(async (event) => {
       statusMessage: 'Internal server error',
     });
   }
+}, {
+  maxAge: 60 * 60, // 1 hour
+  swr: true,
+  getKey: (event) => {
+    const slug = getRouterParam(event, 'slug');
+    const query = getQuery(event);
+    return `category:${slug}:${JSON.stringify(query)}`;
+  },
 });

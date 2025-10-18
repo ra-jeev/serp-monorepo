@@ -1,6 +1,6 @@
 import { PostService } from '@serp/api/posts';
 
-export default defineEventHandler(async (event) => {
+export default defineCachedEventHandler(async (event) => {
   const slug = getRouterParam(event, 'slug');
 
   if (!slug) {
@@ -21,4 +21,11 @@ export default defineEventHandler(async (event) => {
   }
 
   return post;
+}, {
+  maxAge: 60 * 60, // 1 hour
+  swr: true,
+  getKey: (event) => {
+    const slug = getRouterParam(event, 'slug');
+    return `post:${slug}`;
+  },
 });
