@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { BaseService } from './base';
 import {
   findPosts,
   findPostsWithCategories,
@@ -41,7 +42,7 @@ const postListParamsSchema = z.object({
   includeCategories: z.coerce.boolean().default(false),
 });
 
-export class PostService {
+export class PostService extends BaseService {
   async getPosts(params: unknown): Promise<PostListResponse> {
     try {
       const validatedParams = postListParamsSchema.parse(params);

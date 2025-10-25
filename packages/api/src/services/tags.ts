@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { BaseService } from './base';
 import {
   findTags,
   findTagBySlug,
@@ -40,7 +41,7 @@ const tagDetailParamsSchema = z.object({
   includePosts: z.coerce.boolean().default(true),
 });
 
-export class TagService {
+export class TagService extends BaseService {
   async getTags(params: unknown): Promise<TagListResponse> {
     try {
       const validatedParams = tagListParamsSchema.parse(params);

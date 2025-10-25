@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { BaseService } from './base';
 import {
   findCompanies,
   findCompanyBySlug,
@@ -36,7 +37,7 @@ export type CompanyDetailResponse = z.infer<typeof selectCompanySchema> & {
   alternatives: CompanyResult[];
 };
 
-export class CompanyService {
+export class CompanyService extends BaseService {
   async getCompanies(params: unknown): Promise<CompanyListResponse> {
     try {
       const validatedParams = companySearchApiParamsSchema.parse(params);
