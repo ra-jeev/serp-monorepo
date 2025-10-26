@@ -1,7 +1,7 @@
 import type { H3Event } from 'h3';
 
 export function getDbConnectionString(event: H3Event) {
-  const hyperdrive = event.context?.cloudflare?.env?.HYPERDRIVE || process.env.HYPERDRIVE;
+  const hyperdrive = event.context?.cloudflare?.env?.HYPERDRIVE;
   if (hyperdrive?.connectionString) {
     return hyperdrive.connectionString;
   }

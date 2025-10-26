@@ -76,12 +76,9 @@ export function useCompanies(options: UseCompaniesOptions = {}) {
     limit,
   }));
 
-  const { data, pending, error } = useAsyncData<CompanyListResponse>(
-    `companies-${limit}`,
-    () => $fetch('/api/companies', { params: queryParams.value }),
-    {
-      watch: [queryParams],
-    },
+  const { data, pending, error } = useFetch<CompanyListResponse>(
+    '/api/companies',
+    { key: `companies-${limit}`, params: queryParams },
   );
 
   const generatePaginationLink = (p: number) => {

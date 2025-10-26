@@ -16,17 +16,12 @@ export function useCategories(options: UseCategoriesOptions = {}) {
   const page = ref(1);
   const allCategories = ref<Category[]>([]);
 
-  const { data, pending, error } = useAsyncData<CategoryListResponse>(
-    cacheKey,
-    () =>
-      $fetch('/api/categories', {
-        params: {
-          limit,
-          entityType,
-          page: page.value,
-        },
-      }),
-    { watch: [page] },
+  const { data, pending, error } = useFetch<CategoryListResponse>(
+    '/api/categories',
+    {
+      key: cacheKey,
+      params: { limit, entityType, page },
+    },
   );
 
   watch(data, (newData) => {

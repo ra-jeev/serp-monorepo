@@ -1,17 +1,13 @@
 import type { Post, PostListResponse } from '~/types';
 
 export function useGlossary() {
-  const { data, pending, error } = useAsyncData<PostListResponse>(
-    'glossary-all',
-    () =>
-      $fetch('/api/posts', {
-        params: {
-          type: 'glossary',
-          limit: 200, // Get all items at once
-          sortBy: 'name-asc', // Alphabetical for glossary
-        },
-      }),
-  );
+  const { data, pending, error } = useFetch<PostListResponse>('/api/posts', {
+    params: {
+      type: 'glossary',
+      limit: 200, // Get all items at once
+      sortBy: 'name-asc', // Alphabetical for glossary
+    },
+  });
 
   // Group posts by first letter
   const groupedPosts = computed(() => {

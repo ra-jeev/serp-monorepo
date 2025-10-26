@@ -98,13 +98,10 @@ export function usePosts(options: UsePostsOptions = {}) {
     includeCategories,
   }));
 
-  const { data, pending, error } = useAsyncData<PostListResponse>(
-    `posts-${limit}-${type || 'all'}${categorySlug ? '-' + categorySlug : ''}`,
-    () => $fetch('/api/posts', { params: queryParams.value }),
-    {
-      watch: [queryParams],
-    },
-  );
+  const { data, pending, error } = useFetch<PostListResponse>('/api/posts', {
+    key: `posts-${limit}-${type || 'all'}${categorySlug ? '-' + categorySlug : ''}`,
+    params: queryParams,
+  });
 
   const generatePaginationLink = (p: number) => {
     const query = { ...route.query };
