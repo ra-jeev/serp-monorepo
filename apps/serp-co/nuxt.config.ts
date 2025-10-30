@@ -34,16 +34,19 @@ export default defineNuxtConfig({
     },
   },
   sitemap: {
-    sitemapsPathPrefix: '/',
+    // sitemapsPathPrefix: '/',
+    defaultSitemapsChunkSize: 10000,
     sitemaps: {
       ['sitemap-pages']: {
         includeAppSources: true,
       },
       ['sitemap-products']: {
         sources: ['/api/__sitemap__/urls/products'],
+        chunks: true,
       },
       ['sitemap-posts']: {
         sources: ['/api/__sitemap__/urls/posts'],
+        chunks: true,
       },
     },
   },
