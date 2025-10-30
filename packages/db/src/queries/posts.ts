@@ -329,3 +329,26 @@ export async function findPostsByIds(ids: number[]): Promise<PostResult[]> {
   const db = getDb();
   return db.select(postSelectFields).from(posts).where(inArray(posts.id, ids));
 }
+
+export async function findAllPostSlugsForSitemap() {
+  const db = getDb();
+
+  const [postsSlugs, categoriesSlugs] = await Promise.all([
+    db
+      .select({
+        slug: posts.slug,
+        updatedAt: posts.updatedAt,
+      })
+      .from(posts)
+      .orderBy(asc(posts.slug)),
+    db
+      .select({
+        slug: categories.slug,
+        updatedAt: categories.updatedAt,
+      })
+      .from(categories)
+      .where(eq(categories.entityType, 'post'))
+      .orderBy(asc(categories.slug))]);
+
+  return { posts: postsSlugs, categories: categoriesSlugs };
+}
