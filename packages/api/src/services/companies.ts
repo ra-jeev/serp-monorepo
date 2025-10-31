@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { BaseService } from './base';
 import {
+  findAllCompanyCategorySlugsForSitemap,
   findAllCompanySlugsForSitemap,
   findCompanies,
   findCompanyBySlug,
@@ -144,6 +145,16 @@ export class CompanyService extends BaseService {
     } catch (error) {
       throw new Error(
         `Failed to fetch companies for sitemap: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
+    }
+  }
+
+  async getAllCompanyCategoriesForSitemap() {
+    try {
+      return await findAllCompanyCategorySlugsForSitemap();
+    } catch (error) {
+      throw new Error(
+        `Failed to fetch company categories for sitemap: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }

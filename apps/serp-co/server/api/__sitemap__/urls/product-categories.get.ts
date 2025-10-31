@@ -6,14 +6,14 @@ export default defineSitemapEventHandler(async (event) => {
   try {
     const connectionString = getDbConnectionString(event);
     const companyService = new CompanyService(connectionString);
-    const companies = await companyService.getAllCompaniesForSitemap();
+    const categories = await companyService.getAllCompanyCategoriesForSitemap();
 
-    return companies.map((company) => ({
-      loc: `/products/${company.slug}/reviews`,
-      lastmod: company.updatedAt,
+    return categories.map((category) => ({
+      loc: `/products/best/${category.slug}`,
+      lastmod: category.updatedAt,
     } satisfies SitemapUrl));
   } catch (error) {
-    console.error('Error generating products sitemap:', error);
+    console.error('Error generating product categories sitemap:', error);
     return [];
   }
 });

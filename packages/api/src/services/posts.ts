@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { BaseService } from './base';
 import {
+  findAllPostCategorySlugsForSitemap,
   findAllPostSlugsForSitemap,
   findPosts,
   findPostsWithCategories,
@@ -185,6 +186,16 @@ export class PostService extends BaseService {
     } catch (error) {
       throw new Error(
         `Failed to fetch posts for sitemap: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
+    }
+  }
+
+  async getAllPostCategoriesForSitemap() {
+    try {
+      return await findAllPostCategorySlugsForSitemap();
+    } catch (error) {
+      throw new Error(
+        `Failed to fetch post categories for sitemap: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }

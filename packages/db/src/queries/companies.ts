@@ -313,23 +313,25 @@ export async function findCompaniesByTagId(
 export async function findAllCompanySlugsForSitemap() {
   const db = getDb();
 
-  const [companiesSlugs, categoriesSlugs] = await Promise.all([
-    db
-      .select({
-        slug: companies.slug,
-        updatedAt: companies.updatedAt,
-      })
-      .from(companies)
-      .orderBy(asc(companies.slug)),
-    db
-      .select({
-        slug: categories.slug,
-        updatedAt: categories.updatedAt,
-      })
-      .from(categories)
-      .where(eq(categories.entityType, 'company'))
-      .orderBy(asc(categories.slug)),
-  ]);
+  return await
+  db
+    .select({
+      slug: companies.slug,
+      updatedAt: companies.updatedAt,
+    })
+    .from(companies)
+    .orderBy(asc(companies.slug));
+}
 
-  return { companies: companiesSlugs, categories: categoriesSlugs };
+export async function findAllCompanyCategorySlugsForSitemap() {
+  const db = getDb();
+
+  return await db
+    .select({
+      slug: categories.slug,
+      updatedAt: categories.updatedAt,
+    })
+    .from(categories)
+    .where(eq(categories.entityType, 'company'))
+    .orderBy(asc(categories.slug));
 }

@@ -36,6 +36,7 @@ export default defineNuxtConfig({
   sitemap: {
     // sitemapsPathPrefix: '/',
     defaultSitemapsChunkSize: 10000,
+    cacheMaxAgeSeconds: 3600,
     sitemaps: {
       ['sitemap-pages']: {
         includeAppSources: true,
@@ -44,8 +45,16 @@ export default defineNuxtConfig({
         sources: ['/api/__sitemap__/urls/products'],
         chunks: true,
       },
+      ['sitemap-product-categories']: {
+        sources: ['/api/__sitemap__/urls/product-categories'],
+        chunks: true,
+      },
       ['sitemap-posts']: {
         sources: ['/api/__sitemap__/urls/posts'],
+        chunks: true,
+      },
+      ['sitemap-post-categories']: {
+        sources: ['/api/__sitemap__/urls/post-categories'],
         chunks: true,
       },
     },

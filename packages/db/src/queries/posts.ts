@@ -333,22 +333,24 @@ export async function findPostsByIds(ids: number[]): Promise<PostResult[]> {
 export async function findAllPostSlugsForSitemap() {
   const db = getDb();
 
-  const [postsSlugs, categoriesSlugs] = await Promise.all([
-    db
-      .select({
-        slug: posts.slug,
-        updatedAt: posts.updatedAt,
-      })
-      .from(posts)
-      .orderBy(asc(posts.slug)),
-    db
-      .select({
-        slug: categories.slug,
-        updatedAt: categories.updatedAt,
-      })
-      .from(categories)
-      .where(eq(categories.entityType, 'post'))
-      .orderBy(asc(categories.slug))]);
+  return await db
+    .select({
+      slug: posts.slug,
+      updatedAt: posts.updatedAt,
+    })
+    .from(posts)
+    .orderBy(asc(posts.slug));
+}
 
-  return { posts: postsSlugs, categories: categoriesSlugs };
+export async function findAllPostCategorySlugsForSitemap() {
+  const db = getDb();
+
+  return await db
+    .select({
+      slug: categories.slug,
+      updatedAt: categories.updatedAt,
+    })
+    .from(categories)
+    .where(eq(categories.entityType, 'post'))
+    .orderBy(asc(categories.slug));
 }

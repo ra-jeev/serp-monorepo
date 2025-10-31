@@ -6,14 +6,14 @@ export default defineSitemapEventHandler(async (event) => {
   try {
     const connectionString = getDbConnectionString(event);
     const postService = new PostService(connectionString);
-    const posts = await postService.getAllPostsForSitemap();
+    const categories = await postService.getAllPostCategoriesForSitemap();
 
-    return posts.map((post) => ({
-      loc: `/posts/${post.slug}`,
-      lastmod: post.updatedAt,
+    return categories.map((category) => ({
+      loc: `/posts/category/${category.slug}`,
+      lastmod: category.updatedAt,
     } satisfies SitemapUrl));
   } catch (error) {
-    console.error('Error generating posts sitemap:', error);
+    console.error('Error generating post categories sitemap:', error);
     return [];
   }
 });
