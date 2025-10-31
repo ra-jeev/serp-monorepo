@@ -16,8 +16,10 @@ export default defineNuxtConfig({
       external: ['pg-native'],
     },
     cloudflare: {
-      deployConfig: true,
-      nodeCompat: true,
+      deployConfig: false,
+    },
+    cloudflareDev: {
+      environment: 'staging',
     },
   },
   ogImage: {
