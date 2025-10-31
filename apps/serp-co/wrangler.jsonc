@@ -20,6 +20,24 @@
       "id": "e9d6c82b5ad5470380f800096ee39dce",
     },
   ],
+  "vars": {
+    "MUXT_PUBLIC_SITE_NAME": "SERP",
+    "MUXT_PUBLIC_SITE_URL": "https://serp-co.rajeevs.workers.dev",
+  },
+  "env": {
+    "staging": {
+      "vars": {
+        "MUXT_PUBLIC_SITE_NAME": "SERP STAGING",
+        "MUXT_PUBLIC_SITE_URL": "https://serp-co-staging.rajeevs.workers.dev",
+      },
+      "hyperdrive": [
+        {
+          "binding": "HYPERDRIVE",
+          "id": "5690c291c0504fc7ac611dfae790ff39",
+        },
+      ],
+    },
+  }
   /**
    * Smart Placement
    * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
