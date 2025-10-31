@@ -7,6 +7,7 @@ export default defineNuxtConfig({
   site: {
     url: process.env.NUXT_PUBLIC_SITE_URL || 'https://serp.co',
     name: process.env.NUXT_PUBLIC_SITE_NAME || 'SERP',
+    trailingSlash: true,
   },
   compatibilityDate: '2025-07-15',
   nitro: {

@@ -7,4 +7,11 @@ export default defineNuxtConfig({
   modules: ['@nuxt/ui'],
   devtools: { enabled: true },
   css: [join(currentDir, './app/assets/css/main.css')],
+  experimental: {
+    defaults: {
+      nuxtLink: {
+        trailingSlash: 'append',
+      },
+    },
+  },
 });
