@@ -9,7 +9,7 @@
     "preview": "pnpm run build && wrangler dev",
     "postinstall": "nuxt prepare",
     "deploy": "pnpm run build && wrangler deploy",
-    "deploy:production": "wrangler deploy --env production",
+    "deploy:production": "wrangler deploy",
     "deploy:staging": "wrangler deploy --env staging",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
